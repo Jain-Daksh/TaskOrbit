@@ -1,0 +1,20 @@
+model User {
+  id         String  @id @default(uuid())
+  name       String
+  email      String  @unique
+  password   String
+  isVerified Boolean @default(false)
+  isActive   Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  workspacesOwned Workspace[] @relation("WorkspaceOwner")
+  workspaceMembers WorkspaceMember[]
+  createdProjects Project[]
+
+  assignedTasks Task[] @relation("TaskAssignee")
+  createdTasks  Task[] @relation("TaskCreator")
+
+  comments Comment[]
+}
