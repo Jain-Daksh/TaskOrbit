@@ -1,10 +1,16 @@
 {
-  "name": "backend",
+  "name": "taskorbit-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "TaskOrbit Jira Clone Backend",
+  "main": "dist/index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "db:create": "ts-node scripts/create-db.ts",
+    "db:migrate": "prisma migrate dev",
+    "db:generate": "prisma generate",
+    "db:setup": "npm run db:create && prisma migrate dev",
+    "prisma:studio": "prisma studio"
   },
   "keywords": [],
   "author": "",
@@ -12,11 +18,13 @@
   "dependencies": {
     "@prisma/client": "^7.4.2",
     "express": "^5.2.1",
-    "prisma": "^7.4.2"
+    "pg": "^8.20.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
-    "@types/node": "^25.3.3",
+    "@types/node": "^25.3.5",
+    "prisma": "^7.4.2",
+    "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
   }
