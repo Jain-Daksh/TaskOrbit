@@ -22,7 +22,7 @@ const prisma = new PrismaClient({
   log: ['query', 'info', 'warn', 'error'],
 });
 const SALT_ROUNDS = 10;
-const SECRET = process.env.PASSWORD_SECRET || '';
+const SECRET = process.env.JWT_SECRET || '';
 
 async function hashPassword(password: string) {
   return bcrypt.hash(password + SECRET, SALT_ROUNDS);
