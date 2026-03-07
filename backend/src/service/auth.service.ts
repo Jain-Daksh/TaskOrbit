@@ -1,6 +1,7 @@
 import { prisma } from '../../prisma/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { v4 as uuidv4 } from 'uuid';
 
 const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET!;
@@ -34,14 +35,35 @@ export class AuthService {
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) throw new Error('Invalid email or password');
 
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
-      expiresIn: '7d',
+    const accessToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET!, {
+      expiresIn: '15m',
+    });
+    const refreshToken = uuidv4();
+    await prisma.refreshToken.create({
+      data: {
+        userId: user.id,
+        token: refreshToken,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      },
     });
 
-    return { user, token };
+    return { accessToken, refreshToken, user };
   }
 
-  static verifyToken(token: string) {
-    return jwt.verify(token, JWT_SECRET) as { userId: string };
+  static async refreshToken(token: string) {
+    const record = await prisma.refreshToken.findUnique({ where: { token } });
+    if (!record) throw new Error('Invalid refresh token');
+
+    if (record.expiresAt < new Date()) {
+      await prisma.refreshToken.delete({ where: { token } });
+      throw new Error('Refresh token expired');
+    }
+
+    const accessToken = jwt.sign(
+      { id: record.userId },
+      process.env.JWT_SECRET!,
+      { expiresIn: '15m' },
+    );
+    return accessToken;
   }
 }
