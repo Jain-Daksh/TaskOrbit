@@ -11,7 +11,7 @@
     "db:setup": "npm run db:create && prisma migrate dev && npx prisma generate",
     "prisma:studio": "prisma studio",
     "prisma:build-schema": "ts-node scripts/build-schema.ts",
-    "seed": "npm run  prisma/seed/index.ts",
+    "seed": "tsx prisma/seed/index.ts",
     "dev": "nodemon src/index.ts"
   },
   "keywords": [],
