@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import pg from 'pg';
 import cors from 'cors';
-import router from './routes/index';
+import router from './routes/index.route';
 const { Pool } = pg;
 
 const app = express();
@@ -18,19 +18,19 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+// const pool = new Pool({
+//   connectionString: process.env.DATABASE_URL,
+// });
 
-const adapter = new PrismaPg(pool);
+// const adapter = new PrismaPg(pool);
 
-const prisma = new PrismaClient({
-  adapter,
-  log: ['query', 'info', 'warn', 'error'],
-});
+// const prisma = new PrismaClient({
+//   adapter,
+//   log: ['query', 'info', 'warn', 'error'],
+// });
 
 app.use(router);
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(` Server running on http://localhost:${PORT}`);
 });
