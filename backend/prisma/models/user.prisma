@@ -17,4 +17,6 @@ model User {
   createdTasks  Task[] @relation("TaskCreator")
 
   comments Comment[]
+
+  refreshTokens RefreshToken[]
 }
