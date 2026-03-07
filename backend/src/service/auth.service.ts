@@ -3,11 +3,10 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 const SALT_ROUNDS = 10;
-const JWT_SECRET = process.env.PASSWORD_SECRET!;
+const JWT_SECRET = process.env.JWT_SECRET!;
 
 export class AuthService {
   static async signup(name: string, email: string, password: string) {
-
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) throw new Error('Email already registered');
 
