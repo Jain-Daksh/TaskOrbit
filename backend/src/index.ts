@@ -18,19 +18,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-// const pool = new Pool({
-//   connectionString: process.env.DATABASE_URL,
-// });
-
-// const adapter = new PrismaPg(pool);
-
-// const prisma = new PrismaClient({
-//   adapter,
-//   log: ['query', 'info', 'warn', 'error'],
-// });
-
 app.use(router);
-
 app.listen(PORT, () => {
   console.log(` Server running on http://localhost:${PORT}`);
 });
