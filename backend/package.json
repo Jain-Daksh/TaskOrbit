@@ -12,7 +12,7 @@
     "prisma:studio": "prisma studio",
     "prisma:build-schema": "ts-node scripts/build-schema.ts",
     "seed": "tsx prisma/seed/index.ts",
-    "dev": "nodemon --watch \"src/**/*.ts\" --exec \"npx ts-node\" src/index.ts"
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts"
   },
   "keywords": [],
   "author": "",
