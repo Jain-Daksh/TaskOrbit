@@ -1,12 +1,26 @@
 import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
+import pg from 'pg';
+import { PrismaPg } from '@prisma/adapter-pg';
 
 if (!process.env.DATABASE_URL) {
   throw new Error('DATABASE_URL is not defined in .env');
 }
 
-const prisma = new PrismaClient();
+const { Pool } = pg;
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
+
+// prisma adapter
+const adapter = new PrismaPg(pool);
+
+const prisma = new PrismaClient({
+  adapter,
+  log: ['query', 'info', 'warn', 'error'],
+});
 const SALT_ROUNDS = 10;
 const SECRET = process.env.PASSWORD_SECRET || '';
 
