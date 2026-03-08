@@ -7,7 +7,7 @@ export class WorkspaceService {
   ) {
     const adminRole = await prisma.role.findFirst({
       where: {
-        name: 'ADMIN',
+        name: 'Admin',
       },
     });
 
@@ -57,7 +57,7 @@ export class WorkspaceService {
   async updateWorkspace(workspaceId: string, userId: string, name: string) {
     const adminRole = await prisma.role.findFirst({
       where: {
-        name: 'ADMIN',
+        name: 'Admin',
       },
     });
 
