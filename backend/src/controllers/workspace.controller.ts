@@ -1,37 +1,53 @@
 import { Request, Response } from 'express';
 import { WorkspaceService } from '../service/workspace.service';
+import { Failed, Success } from '../utils/apiResponse';
 
 const workspaceService = new WorkspaceService();
 
 export class WorkspaceController {
-  async createWorkspace(req: Request, res: Response) {
+  static async createWorkspace(req: Request, res: Response) {
     try {
       const userId = req.user!.userId;
       const workspace = await workspaceService.createWorkspace(userId, {
         name: req.body.name,
         tierId: req.body.tierId,
       });
-
-      res.json(workspace);
-    } catch (error) {
-      res.status(500).json({ message: 'Failed to create workspace' });
+      return Success(res, 'Workspace created Successfully', workspace);
+    } catch (error: any) {
+      return Failed(
+        res,
+        error.message || 'Failed to create workspace ',
+        400,
+        error,
+      );
     }
   }
 
-  async getWorkspaces(req: Request, res: Response) {
+  static async getWorkspaces(req: Request, res: Response) {
     const userId = req.user!.userId;
 
     const workspaces = await workspaceService.getUserWorkspaces(userId);
 
-    res.json(workspaces);
+    return Success(res, 'Here is workspace data', workspaces);
   }
 
-  async getWorkspace(req: Request, res: Response) {
+  static async getWorkspace(req: Request, res: Response) {
     const userId = req.user!.userId;
     const workspaceId = req.params.id as string;
 
-    const workspace = await workspaceService.getWorkspace(workspaceId, userId);
-
-    res.json(workspace);
+    try {
+      const workspace = await workspaceService.getWorkspace(
+        workspaceId,
+        userId,
+      );
+      return Success(res, 'Workspace Info', workspace);
+    } catch (error: any) {
+      return Failed(
+        res,
+        error.message || 'Failed to get workspace info',
+        400,
+        error,
+      );
+    }
   }
 }
