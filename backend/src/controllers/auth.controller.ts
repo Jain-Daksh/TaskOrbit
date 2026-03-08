@@ -31,7 +31,11 @@ export class AuthController {
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
-      return Success(res, 'Login successful', user);
+      return Success(res, 'Login successful', {
+        user,
+        accessToken,
+        refreshToken,
+      });
     } catch (err: any) {
       return Failed(res, err.message || 'Login failed', 400, err);
     }
