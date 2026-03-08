@@ -29,13 +29,21 @@ export class AuthService {
   }
 
   static async login(email: string, password: string) {
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        password: true,
+      },
+    });
     if (!user) throw new Error('Invalid email or password');
 
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) throw new Error('Invalid email or password');
 
-    const accessToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET!, {
+    const accessToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, {
       expiresIn: '15m',
     });
     const refreshToken = uuidv4();
@@ -46,8 +54,9 @@ export class AuthService {
         expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       },
     });
+    const { password: _, ...safeUser } = user;
 
-    return { accessToken, refreshToken, user };
+    return { accessToken, refreshToken, user: safeUser };
   }
 
   static async refreshToken(token: string) {
@@ -60,7 +69,7 @@ export class AuthService {
     }
 
     const accessToken = jwt.sign(
-      { id: record.userId },
+      { userId: record.userId },
       process.env.JWT_SECRET!,
       { expiresIn: '15m' },
     );
