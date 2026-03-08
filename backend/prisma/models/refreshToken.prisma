@@ -1,9 +1,7 @@
 model RefreshToken {
-  id   String @id @default(uuid())
-
-  userId String
-  creator   User @relation(fields: [userId], references: [id])
-token String
-expiresAt DateTime
-
+  id        String   @id @default(uuid())
+  userId    String
+  creator   User     @relation(fields: [userId], references: [id])
+  token     String   @unique
+  expiresAt DateTime
 }
