@@ -3,12 +3,21 @@ model Status {
   name String
 
   workspaceId String
-  workspace Workspace @relation(fields: [workspaceId], references: [id])
+  workspace   Workspace @relation(fields: [workspaceId], references: [id])
 
   isActive Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  order     Int      @default(0)
+  tasks     Task[]
 
-  tasks Task[]
+  createdBy String
+  creator   User   @relation("StatusCreatedBy", fields: [createdBy], references: [id])
+
+  updatedBy String
+  updater   User   @relation("StatusUpdatedBy", fields: [updatedBy], references: [id])
+
+  @@unique([workspaceId, order])
+  @@index([workspaceId, order])
 }
