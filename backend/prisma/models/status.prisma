@@ -12,6 +12,12 @@ model Status {
   order     Int      @default(0)
   tasks     Task[]
 
+  createdBy String
+  creator   User   @relation("StatusCreatedBy", fields: [createdBy], references: [id])
+
+  updatedBy String
+  updater   User   @relation("StatusUpdatedBy", fields: [updatedBy], references: [id])
+
   @@unique([workspaceId, order])
   @@index([workspaceId, order])
 }
