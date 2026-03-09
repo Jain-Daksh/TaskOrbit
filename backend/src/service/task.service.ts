@@ -44,11 +44,6 @@ export class TaskService {
     const project = await prisma.project.findFirst({
       where: {
         id: projectId,
-        workspace: {
-          members: {
-            some: { userId },
-          },
-        },
       },
     });
 
