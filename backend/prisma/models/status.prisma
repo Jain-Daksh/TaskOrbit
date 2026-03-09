@@ -12,5 +12,6 @@ model Status {
   order     Int      @default(0)
   tasks     Task[]
 
-  @@unique([workspaceId, name])
+  @@unique([workspaceId, order])
+  @@index([workspaceId, order])
 }
