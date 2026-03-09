@@ -1,7 +1,10 @@
 import { prisma } from '../../prisma/client';
 
 export class StatusService {
-  async createStatus(data: { workspaceId: string; name: string }) {
+  async createStatus(
+    userId: string,
+    data: { workspaceId: string; name: string },
+  ) {
     const workspace = await prisma.workspace.findUnique({
       where: { id: data.workspaceId },
     });
@@ -27,6 +30,8 @@ export class StatusService {
         workspaceId: data.workspaceId,
         order: nextOrder,
         isActive: true,
+        createdBy: userId,
+        updatedBy: userId,
       },
     });
   }
@@ -51,7 +56,11 @@ export class StatusService {
     });
   }
 
-  async updateStatus(statusId: string, data: { name?: string }) {
+  async updateStatus(
+    userId: string,
+    statusId: string,
+    data: { name?: string },
+  ) {
     const status = await prisma.status.findUnique({
       where: { id: statusId },
     });
@@ -62,11 +71,14 @@ export class StatusService {
 
     return prisma.status.update({
       where: { id: statusId },
-      data,
+      data: {
+        ...data,
+        updatedBy: userId,
+      },
     });
   }
 
-  async deleteStatus(statusId: string) {
+  async deleteStatus(statusId: string, userId: string) {
     const status = await prisma.status.findUnique({
       where: { id: statusId },
       include: {
@@ -83,6 +95,7 @@ export class StatusService {
         where: { id: statusId },
         data: {
           isActive: false,
+          updatedBy: userId,
         },
       });
     }
@@ -92,11 +105,14 @@ export class StatusService {
     });
   }
 
-  async reorderStatuses(statuses: { id: string; order: number }[]) {
+  async reorderStatuses(
+    userId: string,
+    statuses: { id: string; order: number }[],
+  ) {
     const updates = statuses.map((status) =>
       prisma.status.update({
         where: { id: status.id },
-        data: { order: status.order },
+        data: { order: status.order, updatedBy: userId },
       }),
     );
 
