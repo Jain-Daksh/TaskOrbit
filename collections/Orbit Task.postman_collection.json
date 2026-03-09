@@ -1,0 +1,1026 @@
+{
+  "info": {
+    "_postman_id": "1bc1e712-272a-4bbb-8e2e-b8a505f94a4e",
+    "name": "Orbit Task",
+    "description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53009360",
+    "_collection_link": "https://go.postman.co/collection/53009360-1bc1e712-272a-4bbb-8e2e-b8a505f94a4e?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "New Request",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\" : \"Daksh Jain\",\r\n    \"email\": \"dsjabd@gmail.com\",\r\n    \"password\": \"daksh jain\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3011/user/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3011",
+              "path": [
+                "user",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "default"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\" : \"Daksh Jain\",\r\n    \"email\": \"dsjabd@gmail.com\",\r\n    \"password\": \"dsw jain\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/auth/login",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "workspace",
+      "item": [
+        {
+          "name": "http://localhost:4000/workspaces",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "default"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\" : \"Dj\",\r\n   \"tierId\": \"b910db19-6976-4d53-88b1-c781cdd368d4\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/workspaces",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "workspaces"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Project",
+      "item": [
+        {
+          "name": "create",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "default"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"My Project\",\r\n  \"workspaceId\": \"fbac2b2f-0a12-4a0e-84d9-146180843c3e\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/projects",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "projects"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get all workspace project",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "default"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/projects/workspace/fbac2b2f-0a12-4a0e-84d9-146180843c3e",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "projects",
+                "workspace",
+                "fbac2b2f-0a12-4a0e-84d9-146180843c3e"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "single project update",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "default"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Updated Project Name\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/projects/9cb9e494-5366-48e6-932f-dae3869815d3",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "projects",
+                "9cb9e494-5366-48e6-932f-dae3869815d3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "single project",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "default"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/projects/workspace/fbac2b2f-0a12-4a0e-84d9-146180843c3e/9cb9e494-5366-48e6-932f-dae3869815d3",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "projects",
+                "workspace",
+                "fbac2b2f-0a12-4a0e-84d9-146180843c3e",
+                "9cb9e494-5366-48e6-932f-dae3869815d3"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Status",
+      "item": [
+        {
+          "name": "Create Status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <TOKEN>",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"workspaceId\": \"fbac2b2f-0a12-4a0e-84d9-146180843c3e\",\n  \"name\": \"dones\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/status",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Statuses",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <TOKEN>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/status/{{workspaceId}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "status",
+                "{{workspaceId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <TOKEN>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/status/single/f4371b8e-78c4-4335-86dd-23f4285bf98a",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "status",
+                "single",
+                "f4371b8e-78c4-4335-86dd-23f4285bf98a"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <TOKEN>",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"In Progress\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/status/f4371b8e-78c4-4335-86dd-23f4285bf98a",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "status",
+                "f4371b8e-78c4-4335-86dd-23f4285bf98a"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <TOKEN>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/status/94aa30f6-d46e-4c78-8c36-523ced733d75",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "status",
+                "94aa30f6-d46e-4c78-8c36-523ced733d75"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reorder Statuses",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <TOKEN>",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"statuses\": [\n    { \"id\": \"6896262c-12db-4943-ac5e-da5187696465\", \"order\": 1 },\n    { \"id\": \"706f9248-a66e-474d-8045-4697d31b422d\", \"order\": 2 }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/status/reorder",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "status",
+                "reorder"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Task",
+      "item": [
+        {
+          "name": "Create Task",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"New Task\",\n  \"description\": \"Task description\",\n  \"projectId\": \"9cb9e494-5366-48e6-932f-dae3869815d3\",\n  \"statusId\": \"f4371b8e-78c4-4335-86dd-23f4285bf98a\",\n  \"priority\": \"MEDIUM\",\n  \"dueDate\": \"2026-03-15T12:00:00.000Z\",\n  \"assigneeId\": \"{{userId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{url}}/task",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "task"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Tasks by Project",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/task/project/9cb9e494-5366-48e6-932f-dae3869815d3",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "task",
+                "project",
+                "9cb9e494-5366-48e6-932f-dae3869815d3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Task",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/task/e153652f-1444-4632-bada-48a5d47ae55f",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "task",
+                "e153652f-1444-4632-bada-48a5d47ae55f"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Task",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Task\",\n  \"description\": \"Updated description\",\n  \"priority\": \"HIGH\",\n  \"dueDate\": \"2026-03-20T12:00:00.000Z\",\n  \"statusId\": \"f4371b8e-78c4-4335-86dd-23f4285bf98a\",\n  \"assigneeId\": \"{{userId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{url}}/task/e153652f-1444-4632-bada-48a5d47ae55f",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "task",
+                "e153652f-1444-4632-bada-48a5d47ae55f"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Task",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/task/b9c66ae9-9cde-41c8-82c8-99c956ed17fb",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "task",
+                "b9c66ae9-9cde-41c8-82c8-99c956ed17fb"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Comment",
+      "item": [
+        {
+          "name": "Create Comment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"taskId\": \"f78570f2-20e5-4fac-8c72-0d5a6d0ee2b4\",\n  \"content\": \"This is a new comment\"\n}"
+            },
+            "url": {
+              "raw": "{{url}}/comment",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "comment"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Comments for Task",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/comment/task/f78570f2-20e5-4fac-8c72-0d5a6d0ee2b4",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "comment",
+                "task",
+                "f78570f2-20e5-4fac-8c72-0d5a6d0ee2b4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Comment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/comment/b1c0f9d3-082b-4633-8b34-770929200d67",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "comment",
+                "b1c0f9d3-082b-4633-8b34-770929200d67"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Comment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Updated comment content\"\n}"
+            },
+            "url": {
+              "raw": "{{url}}/comment/b1c0f9d3-082b-4633-8b34-770929200d67",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "comment",
+                "b1c0f9d3-082b-4633-8b34-770929200d67"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Comment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/comment/bdc31e9c-31f4-40d2-bf85-80e73ce9934c",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "comment",
+                "bdc31e9c-31f4-40d2-bf85-80e73ce9934c"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Get data",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "postman-echo.com/get",
+          "host": [
+            "postman-echo",
+            "com"
+          ],
+          "path": [
+            "get"
+          ]
+        },
+        "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+      },
+      "response": []
+    },
+    {
+      "name": "Post data",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Successful POST request\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\t\"name\": \"Add your name in the body\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "postman-echo.com/post",
+          "host": [
+            "postman-echo",
+            "com"
+          ],
+          "path": [
+            "post"
+          ]
+        },
+        "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "token",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2Y5ZDkzMi1mMWFiLTQzNGUtYjYyYy0wOWM3ZjI0MjRhODkiLCJpYXQiOjE3NzI5NTE5NjUsImV4cCI6MTc3Mjk1Mjg2NX0.T3t1IDHxEbx_Q2i2hbk3sk8JQAMs_v5SZtK4ggD5TX4"
+    },
+    {
+      "key": "url",
+      "value": "localhost:4000"
+    },
+    {
+      "key": "workspaceId",
+      "value": "fbac2b2f-0a12-4a0e-84d9-146180843c3e",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "63f9d932-f1ab-434e-b62c-09c7f2424a89",
+      "type": "string"
+    }
+  ]
+}
