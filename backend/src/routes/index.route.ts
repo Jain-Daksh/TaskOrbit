@@ -6,6 +6,7 @@ import TierRouter from './tier.route';
 import ProjectRouter from './project.route';
 import TaskRouter from './task.route';
 import StatusRouter from './status.route';
+import CommentRouter from './comment.route';
 
 const router = express.Router();
 
@@ -15,7 +16,7 @@ router.use('/tier', TierRouter);
 router.use('/projects', ProjectRouter);
 router.use('/task', TaskRouter);
 router.use('/status', StatusRouter);
-
+router.use('/comment', CommentRouter);
 router.use('/workspaces', workspaceRouter);
 
 export default router;
