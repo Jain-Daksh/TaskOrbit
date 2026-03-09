@@ -3,7 +3,7 @@ model Status {
   name String
 
   workspaceId String
-  workspace Workspace @relation(fields: [workspaceId], references: [id])
+  workspace   Workspace @relation(fields: [workspaceId], references: [id])
 
   isActive Boolean @default(true)
 
@@ -11,4 +11,6 @@ model Status {
   updatedAt DateTime @updatedAt
 
   tasks Task[]
+
+  @@unique([workspaceId, name])
 }
