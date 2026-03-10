@@ -15,11 +15,20 @@ const PORT = process.env.PORT || 4000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+const allowedOrigins = ['http://localhost:3000', 'http://localhost:5173'];
 
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: function (origin: any, callback: any) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
 };
+
 app.use(cors(corsOptions));
 
 app.use(router);
