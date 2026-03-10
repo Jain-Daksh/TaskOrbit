@@ -1,0 +1,21 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar-logo h2 {
+  margin: 0;
+  font-weight: 700;
+  color: #4a90e2;
+}
+
+.navbar-links button {
+  margin-left: 16px;
+}
