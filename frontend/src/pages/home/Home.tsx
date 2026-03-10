@@ -1,9 +1,15 @@
 import { Button, Card, Row, Col } from 'antd';
+import Navbar from '../../components/layout/Navbar';
+import Footer from '../../components/layout/Footer';
 import './Home.css';
 
 export default function Home() {
   return (
     <div className='home-container'>
+      {/* Navbar */}
+      <Navbar />
+
+      {/* Hero Section */}
       <section className='hero'>
         <div className='hero-text'>
           <h1>Organize your team’s work, effortlessly.</h1>
@@ -26,6 +32,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Features Section */}
       <section className='features'>
         <Row gutter={[24, 24]}>
           <Col xs={24} sm={12} md={6}>
@@ -55,12 +62,8 @@ export default function Home() {
         </Row>
       </section>
 
-      <footer className='home-footer'>
-        <p>
-          &copy; {new Date().getFullYear()} Task Manager App. All rights
-          reserved.
-        </p>
-      </footer>
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

@@ -1,16 +1,15 @@
-/* Container */
 .home-container {
   font-family: 'Inter', sans-serif;
   color: #222;
 }
 
-/* Hero Section */
+/* Hero Section spacing to avoid navbar overlap */
 .hero {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  padding: 80px 40px;
+  padding: 120px 40px 80px; /* top padding for navbar */
   background-color: #f9f9f9;
 }
 
@@ -69,13 +68,4 @@
 .feature-card p {
   color: #555;
   font-size: 14px;
-}
-
-/* Footer */
-.home-footer {
-  text-align: center;
-  padding: 24px 0;
-  background-color: #f0f2f5;
-  font-size: 14px;
-  color: #555;
 }
