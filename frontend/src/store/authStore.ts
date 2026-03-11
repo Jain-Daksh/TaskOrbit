@@ -10,13 +10,26 @@ interface AuthState {
   logout: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  token: null,
-  refreshToken: null,
+const STORAGE_KEY = 'auth';
 
-  setToken: (token) => set({ token }),
-  setUser: (user) => set({ user }),
-  setRefreshToken: (token) => set({ refreshToken: token }),
-  logout: () => set({ user: null, token: null, refreshToken: null }),
-}));
+export const useAuthStore = create<AuthState>((set) => {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  const initialState = saved ? JSON.parse(saved) : { user: null, token: null, refreshToken: null };
+
+  const persist = (state: Partial<AuthState>) => {
+    const newState = { ...initialState, ...state };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
+    return newState;
+  };
+
+  return {
+    ...initialState,
+    setToken: (token) => set((state) => persist({ ...state, token })),
+    setUser: (user) => set((state) => persist({ ...state, user })),
+    setRefreshToken: (refreshToken) => set((state) => persist({ ...state, refreshToken })),
+    logout: () => {
+      localStorage.removeItem(STORAGE_KEY);
+      set({ user: null, token: null, refreshToken: null });
+    },
+  };
+});
