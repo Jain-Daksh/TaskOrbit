@@ -95,7 +95,6 @@ export default function HeaderBar() {
             placement='bottomRight'
             trigger={['click']}
           >
-            {' '}
             <div
               style={{
                 cursor: 'pointer',
