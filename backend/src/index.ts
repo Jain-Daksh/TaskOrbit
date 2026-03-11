@@ -15,7 +15,11 @@ const PORT = process.env.PORT || 4000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-const allowedOrigins = ['http://localhost:3000', 'http://localhost:5173'];
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'https://task-orbit-nu.vercel.app/',
+];
 
 const corsOptions = {
   origin: function (origin: any, callback: any) {
