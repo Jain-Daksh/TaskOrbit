@@ -18,7 +18,7 @@ app.use(cookieParser());
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5173',
-  'https://task-orbit-nu.vercel.app/',
+  'https://task-orbit-nu.vercel.app',
 ];
 
 const corsOptions = {
