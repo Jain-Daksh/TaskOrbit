@@ -5,16 +5,19 @@ import {
   CheckSquareOutlined,
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
+import { useAuthStore } from '../../../store/authStore';
 
 const { Sider } = Layout;
 
 export default function Sidebar() {
+  const { user } = useAuthStore();
+
   return (
     <Sider theme='dark'>
       <div style={{ color: 'white', padding: 16, fontWeight: 'bold' }}>
         Task Manager
       </div>
-
+      hi {user?.name}
       <Menu
         theme='dark'
         mode='inline'
