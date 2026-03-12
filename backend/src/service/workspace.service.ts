@@ -46,9 +46,9 @@ export class WorkspaceService {
         },
       },
       include: {
-        members: true, 
+        members: true,
         _count: {
-          select: { members: true }, 
+          select: { members: true },
         },
       },
     });
@@ -67,6 +67,16 @@ export class WorkspaceService {
         members: {
           some: { userId },
         },
+      },
+      include: {
+        members: {
+          include: {
+            user: true,
+            role: true,
+          },
+        },
+        statuses:true,
+        projects: true,
       },
     });
   }
