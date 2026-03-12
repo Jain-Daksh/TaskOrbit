@@ -1,0 +1,50 @@
+.workspace-page {
+  padding: 2rem;
+  min-height: 80vh;
+  background-color: #f9f9f9;
+}
+
+.workspace-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.workspace-card {
+  border-radius: 12px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  padding: 1.5rem;
+  background: #fff;
+  border: 1px solid #e6e6e6;
+}
+
+.workspace-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+.ant-modal-content {
+  border-radius: 12px;
+}
+
+.ant-btn-primary {
+  background-color: #4a90e2;
+  border-color: #4a90e2;
+}
+
+.ant-btn-primary:hover {
+  background-color: #357ab7;
+  border-color: #357ab7;
+}
+
+.ant-table {
+  background: #fff;
+  border-radius: 12px;
+}
+
+.ant-table-thead > tr > th {
+  background: #f0f2f5;
+  font-weight: 600;
+}
