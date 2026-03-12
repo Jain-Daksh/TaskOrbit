@@ -15,6 +15,7 @@ import { PlusOutlined, TeamOutlined } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api/axiosService';
 import './WorkspaceDetailPage.css';
+import { StatusManager } from '../../components/status/status';
 
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
@@ -228,11 +229,9 @@ export default function WorkspaceDetailPage() {
               No Status yet. Create one to get started!
             </Text>
           ) : (
-            <Table<Statuses>
-              dataSource={workspace.statuses}
-              columns={statusColumns}
-              rowKey='id'
-              pagination={false}
+            <StatusManager
+              statuses={workspace.statuses}
+              workspaceId={workspace.id}
             />
           )}
         </TabPane>
