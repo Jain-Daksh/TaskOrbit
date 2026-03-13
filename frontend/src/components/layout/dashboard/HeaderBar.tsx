@@ -26,7 +26,7 @@ export default function HeaderBar() {
       key: 'profile',
       icon: <ProfileOutlined />,
       label: 'Profile',
-      onClick: () => navigate('/profile'),
+      onClick: () => navigate('/app/profile'),
     },
     {
       key: 'logout',

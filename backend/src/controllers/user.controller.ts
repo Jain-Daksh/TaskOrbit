@@ -5,7 +5,7 @@ import { Success, Failed } from '../utils/apiResponse';
 export class UserController {
   static async getProfile(req: Request, res: Response) {
     try {
-      const userId = req.user.id; // Assuming you have middleware that sets req.user
+      const userId = req.user!.userId;
       const user = await UserService.getProfile(userId);
       return Success(res, 'Profile fetched successfully', user);
     } catch (err: any) {
@@ -15,9 +15,12 @@ export class UserController {
 
   static async updateProfile(req: Request, res: Response) {
     try {
-      const userId = req.user.id;
+      const userId = req.user!.userId;
       const { name, email } = req.body;
-      const updatedUser = await UserService.updateProfile(userId, { name, email });
+      const updatedUser = await UserService.updateProfile(userId, {
+        name,
+        email,
+      });
       return Success(res, 'Profile updated successfully', updatedUser);
     } catch (err: any) {
       return Failed(res, err.message || 'Failed to update profile', 400, err);
@@ -26,7 +29,7 @@ export class UserController {
 
   static async updatePassword(req: Request, res: Response) {
     try {
-      const userId = req.user.id;
+      const userId = req.user!.userId;
       const { oldPassword, newPassword } = req.body;
       await UserService.updatePassword(userId, oldPassword, newPassword);
       return Success(res, 'Password updated successfully', null);

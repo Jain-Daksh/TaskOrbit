@@ -5,6 +5,7 @@ import Login from '../pages/auth/Login';
 import Register from '../pages/auth/Register';
 import WorkspaceDetailPage from '../pages/workspace/WorkspaceDetail';
 import WorkspacePage from '../pages/workspace/Workspace';
+import MyProfilePage from '../pages/profile/profile';
 
 const Dashboard = () => <h1>Dashboard</h1>;
 const Projects = () => <h1>Projects</h1>;
@@ -24,6 +25,7 @@ export const router = createBrowserRouter([
       { path: 'tasks', element: <Tasks /> },
       { path: 'workspaces', element: <WorkspacePage /> },
       { path: 'workspace/:id', element: <WorkspaceDetailPage /> },
+      { path: 'profile', element: <MyProfilePage /> },
     ],
   },
 ]);
