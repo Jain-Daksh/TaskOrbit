@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Typography, Form, Input, Button, Card, Spin, App } from 'antd';
 import api from '../../api/axiosService';
+import { useAuthStore } from '../../store/authStore';
 
 const { Title } = Typography;
 
@@ -9,6 +10,7 @@ export default function MyProfilePage() {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [passwordUpdating, setPasswordUpdating] = useState(false);
+  const { user, setUser } = useAuthStore();
 
   const [form] = Form.useForm();
   const [passwordForm] = Form.useForm();
@@ -37,6 +39,10 @@ export default function MyProfilePage() {
     try {
       await api.put('/user/profile', values);
       msg.success('Profile updated successfully');
+      setUser({
+        ...user,
+        ...values,
+      });
       fetchUser();
     } catch (err: any) {
       msg.error(err.response?.data?.message || 'Failed to update profile');
