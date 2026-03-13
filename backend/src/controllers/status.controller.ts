@@ -103,8 +103,20 @@ export class StatusController {
     try {
       const statuses = req.body.statuses;
       const userId = req.user!.userId;
+      const workspaceId = req.body.workspaceId as string;
+      if (!workspaceId) {
+        return Failed(res, 'workspaceId is required', 400);
+      }
 
-      const result = await statusService.reorderStatuses(userId, statuses);
+      if (!Array.isArray(statuses) || statuses.length === 0) {
+        return Failed(res, 'No statuses provided', 400);
+      }
+      console.log('test', userId, workspaceId, statuses);
+      const result = await statusService.reorderStatuses(
+        userId,
+        workspaceId,
+        statuses,
+      );
 
       return Success(res, 'Statuses reordered successfully', result);
     } catch (error: any) {

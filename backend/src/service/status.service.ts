@@ -105,24 +105,53 @@ export class StatusService {
     });
   }
 
-  async reorderStatuses(
-    userId: string,
-    statuses: { id: string; order: number }[],
-  ) {
-    const updates = statuses.map((status) =>
-      prisma.status.update({
-        where: { id: status.id },
-        data: { order: status.order, updatedBy: userId },
-      }),
-    );
-
-    return prisma.$transaction(updates);
-  }
   async getAllStatuses(workspaceId: string) {
     return prisma.status.findMany({
       where: {
         workspaceId,
       },
     });
+  }
+
+  async reorderStatuses(
+    userId: string,
+    workspaceId: string,
+    statuses: { id: string; order: number }[],
+  ) {
+    // Step 0: validate all statuses belong to this workspace
+    const existingStatuses = await prisma.status.findMany({
+      where: { workspaceId, id: { in: statuses.map((s) => s.id) } },
+      select: { id: true },
+    });
+
+    const missing = statuses.filter(
+      (s) => !existingStatuses.some((e) => e.id === s.id),
+    );
+
+    if (missing.length) {
+      throw new Error(
+        `Status IDs not found in this workspace: ${missing.map((m) => m.id).join(', ')}`,
+      );
+    }
+
+    // Step 1: temporary orders to avoid unique conflicts
+    const tempUpdates = statuses.map((status, idx) =>
+      prisma.status.update({
+        where: { id: status.id }, // ✅ update by ID only
+        data: { order: idx + 1000, updatedBy: userId },
+      }),
+    );
+
+    await prisma.$transaction(tempUpdates);
+
+    // Step 2: assign final orders
+    const finalUpdates = statuses.map((status) =>
+      prisma.status.update({
+        where: { id: status.id }, // ✅ update by ID only
+        data: { order: status.order, updatedBy: userId },
+      }),
+    );
+
+    return prisma.$transaction(finalUpdates);
   }
 }
