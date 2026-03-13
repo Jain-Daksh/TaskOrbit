@@ -1,3 +1,4 @@
+import { config } from '../../config/bussiness.Config';
 import { prisma } from '../../prisma/client';
 
 export class WorkspaceService {
@@ -5,6 +6,16 @@ export class WorkspaceService {
     userId: string,
     data: { name: string; tierId: string },
   ) {
+    const userWorkspacesCount = await prisma.workspace.count({
+      where: { ownerId: userId },
+    });
+
+    if (userWorkspacesCount >= config.maxWorkSpace) {
+      throw new Error(
+        `You can only create up to ${config.maxWorkSpace} workspaces.`,
+      );
+    }
+
     const adminRole = await prisma.role.findFirst({
       where: {
         name: 'Admin',
