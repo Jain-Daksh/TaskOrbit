@@ -40,4 +40,26 @@ export class AuthController {
       return Failed(res, err.message || 'Login failed', 400, err);
     }
   }
+  static async refresh(req: Request, res: Response) {
+    try {
+      const refreshToken =
+        req.cookies['refresh_token'] || req.body.refreshToken;
+      if (!refreshToken) throw new Error('Refresh token missing');
+
+      const tokens = await AuthService.refreshToken(refreshToken);
+
+      res.cookie('access_token', tokens.accessToken, {
+        ...COOKIE_OPTIONS,
+        maxAge: 15 * 60 * 1000, // 15 minutes
+      });
+      res.cookie('refresh_token', tokens.refreshToken, {
+        ...COOKIE_OPTIONS,
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      });
+
+      return Success(res, 'Token refreshed', tokens);
+    } catch (err: any) {
+      return Failed(res, err.message || 'Could not refresh token', 400, err);
+    }
+  }
 }

@@ -69,11 +69,23 @@ export class AuthService {
       throw new Error('Refresh token expired');
     }
 
+    await prisma.refreshToken.delete({ where: { token } });
+
     const accessToken = jwt.sign(
       { userId: record.userId },
       process.env.JWT_SECRET!,
       { expiresIn: '15m' },
     );
-    return accessToken;
+
+    const newRefreshToken = uuidv4();
+    await prisma.refreshToken.create({
+      data: {
+        userId: record.userId,
+        token: newRefreshToken,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      },
+    });
+
+    return { accessToken, refreshToken: newRefreshToken };
   }
 }
