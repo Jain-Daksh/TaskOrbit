@@ -7,6 +7,7 @@ import ProjectRouter from './project.route';
 import TaskRouter from './task.route';
 import StatusRouter from './status.route';
 import CommentRouter from './comment.route';
+import UserRoute from './user.route';
 
 const router = express.Router();
 
@@ -18,5 +19,6 @@ router.use('/task', TaskRouter);
 router.use('/status', StatusRouter);
 router.use('/comment', CommentRouter);
 router.use('/workspaces', workspaceRouter);
+router.use('/user', UserRoute);
 
 export default router;
