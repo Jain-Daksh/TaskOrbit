@@ -1,3 +1,4 @@
+import { config } from '../../config/bussiness.Config';
 import { prisma } from '../../prisma/client';
 
 export class ProjectService {
@@ -5,10 +6,31 @@ export class ProjectService {
     userId: string,
     data: { name: string; workspaceId: string },
   ) {
+    const workspace = await prisma.workspace.findUnique({
+      where: { id: data.workspaceId },
+      select: { tier: true },
+    });
+    if (!workspace) throw new Error('Workspace not found');
+
+    const tierName = workspace.tier;
+    const maxProjects =
+      config.maxProjectByTier[tierName as keyof typeof config.maxProjectByTier];
+    if (!maxProjects) throw new Error('Invalid workspace tier');
+
     const member = await prisma.workspaceMember.findFirst({
       where: { userId, workspaceId: data.workspaceId },
     });
     if (!member) throw new Error('User is not a member of this workspace');
+    const projectCount = await prisma.project.count({
+      where: { workspaceId: data.workspaceId },
+    });
+
+    if (projectCount >= maxProjects) {
+      throw new Error(
+        `Your workspace tier '${tierName}' allows up to ${maxProjects} projects.`,
+      );
+    }
+
     return prisma.project.create({
       data: {
         name: data.name,
