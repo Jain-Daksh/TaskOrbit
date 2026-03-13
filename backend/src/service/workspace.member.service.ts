@@ -19,9 +19,12 @@ export class WorkspaceMemberService {
   async addWorkspaceMember(
     workspaceId: string,
     adminUserId: string,
-    newUserId: string,
+    email: string,
     roleName: string = 'Member',
   ) {
+    const newUserId = await prisma.user.findUnique({ where: { email } });
+    if (!newUserId) throw new Error('User with this email not found');
+
     const adminRole = await prisma.role.findFirst({ where: { name: 'Admin' } });
     if (!adminRole) throw new Error('Admin role not found');
 
@@ -35,7 +38,7 @@ export class WorkspaceMemberService {
     if (!isAdmin) throw new Error('Only admins can add members');
 
     const existingMember = await prisma.workspaceMember.findFirst({
-      where: { workspaceId, userId: newUserId },
+      where: { workspaceId, userId: newUserId?.id },
     });
     if (existingMember) throw new Error('User is already a member');
 
@@ -45,7 +48,7 @@ export class WorkspaceMemberService {
     return prisma.workspaceMember.create({
       data: {
         workspaceId,
-        userId: newUserId,
+        userId: newUserId?.id,
         roleId: role.id,
       },
     });
