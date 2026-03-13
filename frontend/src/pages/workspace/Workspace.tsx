@@ -39,11 +39,10 @@ export default function WorkspacePage() {
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [newWorkspaceName, setNewWorkspaceName] = useState('');
-  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('table');
 
   const navigate = useNavigate();
 
-  // Fetch workspaces
   useEffect(() => {
     const fetchWorkspaces = async () => {
       setLoading(true);
@@ -133,16 +132,12 @@ export default function WorkspacePage() {
         <Space size='middle'>
           <Button
             icon={<EyeOutlined />}
-            onClick={() => navigate(`app/workspace/${record.id}`)}
-          >
-            View
-          </Button>
+            onClick={() => navigate(`/app/workspace/${record.id}`)}
+          ></Button>
           <Button
             icon={<EditOutlined />}
-            onClick={() => navigate(`app/workspace/${record.id}`)}
-          >
-            Edit
-          </Button>
+            onClick={() => navigate(`/app/workspace/${record.id}`)}
+          ></Button>
           <Popconfirm
             title='Are you sure to delete?'
             onConfirm={() => deleteWorkspace(record.id)}
@@ -208,16 +203,14 @@ export default function WorkspacePage() {
                   <Button
                     size='small'
                     icon={<EyeOutlined />}
-                    onClick={() => navigate(`app/workspace/${ws.id}`)}
+                    onClick={() => navigate(`/app/workspace/${ws.id}`)}
                   >
-                    View
                   </Button>
                   <Button
                     size='small'
                     icon={<EditOutlined />}
-                    onClick={() => navigate(`app/workspace/${ws.id}`)}
+                    onClick={() => navigate(`/app/workspace/${ws.id}`)}
                   >
-                    Edit
                   </Button>
                   <Popconfirm
                     title='Are you sure to delete?'
