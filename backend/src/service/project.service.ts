@@ -1,3 +1,4 @@
+import { config } from '../../config/bussiness.Config';
 import { prisma } from '../../prisma/client';
 
 export class ProjectService {
@@ -9,6 +10,16 @@ export class ProjectService {
       where: { userId, workspaceId: data.workspaceId },
     });
     if (!member) throw new Error('User is not a member of this workspace');
+    const projectCount = await prisma.project.count({
+      where: { workspaceId: data.workspaceId },
+    });
+
+    if (projectCount >= config.maxProject) {
+      throw new Error(
+        `You can only create up to ${config.maxProject} projects in this workspace.`,
+      );
+    }
+
     return prisma.project.create({
       data: {
         name: data.name,
