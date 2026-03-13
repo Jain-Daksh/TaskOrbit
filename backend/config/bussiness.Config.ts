@@ -8,4 +8,6 @@ export const config = {
     FROM_NAME: 'MyApp',
     FROM_EMAIL: 'no-reply@myapp.com',
   },
+  maxWorkSpace: 5,
+  maxProject: 15
 };
