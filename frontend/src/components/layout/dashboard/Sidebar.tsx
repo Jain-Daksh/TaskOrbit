@@ -1,9 +1,5 @@
 import { Layout, Menu } from 'antd';
-import {
-  DashboardOutlined,
-  ProjectOutlined,
-  CheckSquareOutlined,
-} from '@ant-design/icons';
+import { DashboardOutlined, ProjectOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 
 const { Sider } = Layout;
@@ -21,17 +17,12 @@ export default function Sidebar() {
           {
             key: 'dashboard',
             icon: <DashboardOutlined />,
-            label: <Link to='/'>Dashboard</Link>,
+            label: <Link to='/app'>Dashboard</Link>,
           },
           {
-            key: 'projects',
+            key: 'workspace',
             icon: <ProjectOutlined />,
-            label: <Link to='/projects'>Projects</Link>,
-          },
-          {
-            key: 'tasks',
-            icon: <CheckSquareOutlined />,
-            label: <Link to='/tasks'>Tasks</Link>,
+            label: <Link to='/app/workspaces'>Workspaces</Link>,
           },
         ]}
       />

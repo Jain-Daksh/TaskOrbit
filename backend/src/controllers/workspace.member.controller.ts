@@ -8,14 +8,14 @@ export class WorkspaceMemberController {
   static async addMember(req: Request, res: Response) {
     try {
       const workspaceId = req.body.workspaceId;
-      const newUserId = req.body.userId;
+      const email = req.body.email;
       const roleName = req.body.roleName || 'Member';
       const adminUserId = req.user!.userId;
 
       const member = await workspaceService.addWorkspaceMember(
         workspaceId,
         adminUserId,
-        newUserId,
+        email,
         roleName,
       );
 
@@ -27,8 +27,8 @@ export class WorkspaceMemberController {
 
   static async removeMember(req: Request, res: Response) {
     try {
-      const workspaceId = req.body.workspaceId;
-      const memberUserId = req.body.userId;
+      const workspaceId = req.params.workspaceId as string;
+      const memberUserId = req.params.userId as string;
       const adminUserId = req.user!.userId;
 
       const removed = await workspaceService.removeWorkspaceMember(

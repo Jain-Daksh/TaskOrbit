@@ -45,7 +45,7 @@ export class AuthService {
     if (!valid) throw new Error('Invalid email or password');
 
     const accessToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, {
-      expiresIn: '15m',
+      expiresIn: '95m',
     });
     const refreshToken = uuidv4();
     await prisma.refreshToken.create({
