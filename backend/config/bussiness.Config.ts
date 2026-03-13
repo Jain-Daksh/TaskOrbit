@@ -9,5 +9,9 @@ export const config = {
     FROM_EMAIL: 'no-reply@myapp.com',
   },
   maxWorkSpace: 5,
-  maxProject: 15
+  maxProjectByTier: {
+    Free: 5,
+    Standard: 15,
+    Premium: 50,
+  },
 };
