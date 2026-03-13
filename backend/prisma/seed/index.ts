@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import pg from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
+import { config } from '../../config/bussiness.Config';
 
 if (!process.env.DATABASE_URL) {
   throw new Error('DATABASE_URL is not defined in .env');
@@ -21,7 +22,7 @@ const prisma = new PrismaClient({
   adapter,
   log: ['query', 'info', 'warn', 'error'],
 });
-const SALT_ROUNDS = 10;
+const SALT_ROUNDS = config?.SALT_ROUNDS;
 const SECRET = process.env.JWT_SECRET || '';
 
 async function hashPassword(password: string) {
