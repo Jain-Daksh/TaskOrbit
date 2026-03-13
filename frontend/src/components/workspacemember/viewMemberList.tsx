@@ -1,6 +1,6 @@
 import React from 'react';
 import { Table, Typography, Button, Popconfirm, message } from 'antd';
-
+import type { ColumnsType } from 'antd/es/table';
 const { Text } = Typography;
 
 interface Member {
@@ -42,7 +42,7 @@ export const WorkspaceMembersTable: React.FC<WorkspaceMembersTableProps> = ({
     }
   };
 
-  const columns = [
+  const columns: ColumnsType<Member> = [
     {
       title: 'Name',
       dataIndex: ['user', 'name'],
@@ -64,7 +64,10 @@ export const WorkspaceMembersTable: React.FC<WorkspaceMembersTableProps> = ({
       key: 'joinedAt',
       render: (date: string) => new Date(date).toLocaleDateString(),
     },
-    isAdmin && {
+  ];
+
+  if (isAdmin) {
+    columns.push({
       title: 'Action',
       key: 'action',
       render: (_: any, record: Member) =>
@@ -80,9 +83,8 @@ export const WorkspaceMembersTable: React.FC<WorkspaceMembersTableProps> = ({
             </Button>
           </Popconfirm>
         ) : null,
-    },
-  ].filter(Boolean);
-
+    });
+  }
   if (members.length === 0) {
     return <Text type='secondary'>No members yet.</Text>;
   }
