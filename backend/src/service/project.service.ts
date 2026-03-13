@@ -6,6 +6,17 @@ export class ProjectService {
     userId: string,
     data: { name: string; workspaceId: string },
   ) {
+    const workspace = await prisma.workspace.findUnique({
+      where: { id: data.workspaceId },
+      select: { tier: true },
+    });
+    if (!workspace) throw new Error('Workspace not found');
+
+    const tierName = workspace.tier;
+    const maxProjects =
+      config.maxProjectByTier[tierName as keyof typeof config.maxProjectByTier];
+    if (!maxProjects) throw new Error('Invalid workspace tier');
+
     const member = await prisma.workspaceMember.findFirst({
       where: { userId, workspaceId: data.workspaceId },
     });
@@ -14,9 +25,9 @@ export class ProjectService {
       where: { workspaceId: data.workspaceId },
     });
 
-    if (projectCount >= config.maxProject) {
+    if (projectCount >= maxProjects) {
       throw new Error(
-        `You can only create up to ${config.maxProject} projects in this workspace.`,
+        `Your workspace tier '${tierName}' allows up to ${maxProjects} projects.`,
       );
     }
 
