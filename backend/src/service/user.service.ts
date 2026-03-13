@@ -1,7 +1,8 @@
 import { prisma } from '../../prisma/client';
 import bcrypt from 'bcrypt';
+import { config } from '../../config/bussiness.Config';
 
-const SALT_ROUNDS = 10;
+const SALT_ROUNDS = config?.SALT_ROUNDS;
 
 export class UserService {
   static async getProfile(userId: string) {
