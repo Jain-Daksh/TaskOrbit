@@ -16,6 +16,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api/axiosService';
 import './WorkspaceDetailPage.css';
 import { StatusManager } from '../../components/status/status';
+import { WorkspaceMembersTable } from '../../components/workspacemember/viewMemberList';
 
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
@@ -201,12 +202,7 @@ export default function WorkspaceDetailPage() {
       {/* TABS: Members / Projects */}
       <Tabs defaultActiveKey='members' style={{ marginTop: 24 }}>
         <TabPane tab={`Members (${workspace.members.length})`} key='members'>
-          <Table
-            dataSource={workspace.members}
-            columns={memberColumns}
-            rowKey='id'
-            pagination={false}
-          />
+          <WorkspaceMembersTable members={workspace.members} />
         </TabPane>
 
         <TabPane tab={`Projects (${workspace.projects.length})`} key='projects'>
