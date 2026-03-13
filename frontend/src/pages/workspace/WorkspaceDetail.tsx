@@ -1,0 +1,224 @@
+import { useEffect, useState } from 'react';
+import { Button, Typography, Spin, Space, Tabs, Table, App } from 'antd';
+import { PlusOutlined, TeamOutlined } from '@ant-design/icons';
+import { useParams, useNavigate } from 'react-router-dom';
+import api from '../../api/axiosService';
+import './WorkspaceDetailPage.css';
+import { StatusManager } from '../../components/status/status';
+import { WorkspaceMembersTable } from '../../components/workspacemember/viewMemberList';
+import { AddMemberModal } from '../../components/workspacemember/addMemberModel';
+import { useAuthStore } from '../../store/authStore';
+
+const { Title, Text } = Typography;
+const { TabPane } = Tabs;
+
+interface Member {
+  id: string;
+  userId: string;
+  workspaceId: string;
+  roleId: string;
+  joinedAt: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  role: {
+    id: string;
+    name: string;
+  };
+}
+
+interface Project {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface Statuses {
+  id: string;
+  name: string;
+  isActive: boolean;
+  order: number;
+}
+
+interface Workspace {
+  id: string;
+  name: string;
+  ownerId: string;
+  members: Member[];
+  projects: Project[];
+  statuses: Statuses[];
+}
+
+export default function WorkspaceDetailPage() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { message } = App.useApp();
+
+  const [workspace, setWorkspace] = useState<Workspace | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [addMemberVisible, setAddMemberVisible] = useState(false);
+  const { user } = useAuthStore();
+
+  const currentUserId = user.id;
+  const currentUser = workspace?.members.find(
+    (m) => m.user.id === currentUserId,
+  );
+  const isAdmin = currentUser?.role.name === 'Admin';
+  const fetchWorkspaceDetail = async () => {
+    setLoading(true);
+    try {
+      const res = await api.get(`/workspaces/${id}`);
+      const data = res.data.data;
+
+      setWorkspace({
+        ...data,
+        members: data.members || [],
+        projects: data.projects || [],
+      });
+    } catch (err: any) {
+      message.error(err.response?.data?.message || 'Failed to load workspace');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const removeMember = async (memberId: string) => {
+    try {
+      await api.delete(`/workspacemember/${workspace?.id}/members/${memberId}`);
+      setWorkspace((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          members: prev.members.filter((member) => member.id !== memberId),
+        };
+      });
+    } catch (err: any) {
+      message.error(err.response?.data?.message || 'Failed to remove member');
+      throw err;
+    }
+  };
+
+  // Callback after adding a member
+  const handleMemberAdded = () => {
+    fetchWorkspaceDetail(); // refresh members
+  };
+
+  useEffect(() => {
+    if (id) fetchWorkspaceDetail();
+  }, [id]);
+
+  if (loading || !workspace) {
+    return (
+      <div className='workspace-detail-page-loading'>
+        <Spin size='large' />
+      </div>
+    );
+  }
+
+  const projectColumns = [
+    {
+      title: 'Project Name',
+      dataIndex: 'name',
+      key: 'name',
+      render: (name: string, record: Project) => (
+        <Button
+          type='link'
+          onClick={() => navigate(`/app/projects/${record.id}`)}
+        >
+          {name}
+        </Button>
+      ),
+    },
+    {
+      title: 'Created At',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (date: string) => new Date(date).toLocaleDateString(),
+    },
+    {
+      title: 'Updated At',
+      dataIndex: 'updatedAt',
+      key: 'updatedAt',
+      render: (date: string) => new Date(date).toLocaleDateString(),
+    },
+  ];
+
+  return (
+    <div className='workspace-detail-page'>
+      <div className='workspace-detail-header'>
+        <div>
+          <Title level={2}>{workspace.name}</Title>
+          <Text type='secondary'>{workspace.members.length} members</Text>
+        </div>
+
+        <Space>
+          {isAdmin && (
+            <Button
+              icon={<TeamOutlined />}
+              onClick={() => setAddMemberVisible(true)}
+            >
+              Add Member
+            </Button>
+          )}
+          <Button
+            type='primary'
+            icon={<PlusOutlined />}
+            onClick={() => message.info('Create project modal here')}
+          >
+            New Project
+          </Button>
+        </Space>
+      </div>
+
+      {/* Add Member Modal */}
+      <AddMemberModal
+        workspaceId={workspace.id}
+        visible={addMemberVisible}
+        onClose={() => setAddMemberVisible(false)}
+        onMemberAdded={handleMemberAdded}
+      />
+
+      {/* TABS */}
+      <Tabs defaultActiveKey='members' style={{ marginTop: 24 }}>
+        <TabPane tab={`Members (${workspace.members.length})`} key='members'>
+          <WorkspaceMembersTable
+            isAdmin={isAdmin}
+            members={workspace.members}
+            onRemoveMember={removeMember}
+          />
+        </TabPane>
+
+        <TabPane tab={`Projects (${workspace.projects.length})`} key='projects'>
+          {workspace.projects.length === 0 ? (
+            <Text type='secondary'>
+              No projects yet. Create one to get started!
+            </Text>
+          ) : (
+            <Table
+              dataSource={workspace.projects}
+              columns={projectColumns}
+              rowKey='id'
+              pagination={false}
+            />
+          )}
+        </TabPane>
+
+        <TabPane tab={`Status (${workspace.statuses.length})`} key='statuses'>
+          {workspace.statuses.length === 0 ? (
+            <Text type='secondary'>
+              No Status yet. Create one to get started!
+            </Text>
+          ) : (
+            <StatusManager
+              statuses={workspace.statuses}
+              workspaceId={workspace.id}
+            />
+          )}
+        </TabPane>
+      </Tabs>
+    </div>
+  );
+}

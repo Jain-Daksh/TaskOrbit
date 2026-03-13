@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import pg from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
+import { config } from '../../config/bussiness.Config';
 
 if (!process.env.DATABASE_URL) {
   throw new Error('DATABASE_URL is not defined in .env');
@@ -21,7 +22,7 @@ const prisma = new PrismaClient({
   adapter,
   log: ['query', 'info', 'warn', 'error'],
 });
-const SALT_ROUNDS = 10;
+const SALT_ROUNDS = config?.SALT_ROUNDS;
 const SECRET = process.env.JWT_SECRET || '';
 
 async function hashPassword(password: string) {
@@ -115,6 +116,72 @@ async function main() {
         },
       ],
     });
+  });
+
+  console.log('✅ Database seeded successfully');
+}
+
+// for neon db does not work with transcation
+async function mainNeon() {
+  // 1️⃣ Create tiers
+  const tiers = await prisma.tier.createManyAndReturn({
+    data: [
+      { name: 'Tier 1', price: 10 },
+      { name: 'Tier 2', price: 20 },
+      { name: 'Tier 3', price: 30 },
+    ],
+  });
+
+  // 2️⃣ roles
+  const roles = await prisma.role.createManyAndReturn({
+    data: [{ name: 'Admin' }, { name: 'Member' }],
+  });
+
+  const adminRole = roles.find((r) => r.name === 'Admin');
+  const memberRole = roles.find((r) => r.name === 'Member');
+
+  const hashedPassword = await hashPassword('123456');
+
+  const users = await prisma.user.createManyAndReturn({
+    data: [
+      { name: 'User 1', email: 'user1@test.com', password: hashedPassword },
+      { name: 'User 2', email: 'user2@test.com', password: hashedPassword },
+      { name: 'User 3', email: 'user3@test.com', password: hashedPassword },
+      { name: 'User 4', email: 'user4@test.com', password: hashedPassword },
+      { name: 'User 5', email: 'user5@test.com', password: hashedPassword },
+      { name: 'User 6', email: 'user6@test.com', password: hashedPassword },
+    ],
+  });
+
+  const workspace1 = await prisma.workspace.create({
+    data: {
+      name: 'Workspace 1',
+      tierId: tiers[0].id,
+      ownerId: users[0].id,
+    },
+  });
+
+  const workspace2 = await prisma.workspace.create({
+    data: {
+      name: 'Workspace 2',
+      tierId: tiers[1].id,
+      ownerId: users[1].id,
+    },
+  });
+
+  await prisma.workspaceMember.createMany({
+    data: [
+      {
+        workspaceId: workspace1.id,
+        userId: users[0].id,
+        roleId: adminRole?.id!,
+      },
+      {
+        workspaceId: workspace1.id,
+        userId: users[1].id,
+        roleId: memberRole?.id!,
+      },
+    ],
   });
 
   console.log('✅ Database seeded successfully');

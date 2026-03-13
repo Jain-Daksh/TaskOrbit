@@ -2,8 +2,9 @@ import { prisma } from '../../prisma/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
+import { config } from '../../config/bussiness.Config';
 
-const SALT_ROUNDS = 10;
+const SALT_ROUNDS = config?.SALT_ROUNDS;
 const JWT_SECRET = process.env.JWT_SECRET!;
 
 export class AuthService {
@@ -44,7 +45,7 @@ export class AuthService {
     if (!valid) throw new Error('Invalid email or password');
 
     const accessToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, {
-      expiresIn: '15m',
+      expiresIn: '95m',
     });
     const refreshToken = uuidv4();
     await prisma.refreshToken.create({

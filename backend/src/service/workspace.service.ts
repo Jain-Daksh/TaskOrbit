@@ -1,3 +1,4 @@
+import { config } from '../../config/bussiness.Config';
 import { prisma } from '../../prisma/client';
 
 export class WorkspaceService {
@@ -5,6 +6,16 @@ export class WorkspaceService {
     userId: string,
     data: { name: string; tierId: string },
   ) {
+    const userWorkspacesCount = await prisma.workspace.count({
+      where: { ownerId: userId },
+    });
+
+    if (userWorkspacesCount >= config.maxWorkSpace) {
+      throw new Error(
+        `You can only create up to ${config.maxWorkSpace} workspaces.`,
+      );
+    }
+
     const adminRole = await prisma.role.findFirst({
       where: {
         name: 'Admin',
@@ -14,11 +25,19 @@ export class WorkspaceService {
     if (!adminRole) {
       throw new Error('Admin role not found');
     }
-
+    let tId = data?.tierId;
+    if (!data?.tierId) {
+      const tier = await prisma.tier.findFirst({
+        where: {
+          price: 0,
+        },
+      });
+      tId = tier?.id ?? '';
+    }
     return prisma.workspace.create({
       data: {
         name: data.name,
-        tierId: data.tierId,
+        tierId: tId,
         ownerId: userId,
         members: {
           create: {
@@ -31,7 +50,7 @@ export class WorkspaceService {
   }
 
   async getUserWorkspaces(userId: string) {
-    return prisma.workspace.findMany({
+    const workspaces = await prisma.workspace.findMany({
       where: {
         members: {
           some: { userId },
@@ -39,8 +58,17 @@ export class WorkspaceService {
       },
       include: {
         members: true,
+        _count: {
+          select: { members: true },
+        },
       },
     });
+
+    // Map the count to totalMembers for easier frontend usage
+    return workspaces.map((ws) => ({
+      ...ws,
+      totalMembers: ws._count.members,
+    }));
   }
 
   async getWorkspace(workspaceId: string, userId: string) {
@@ -50,6 +78,16 @@ export class WorkspaceService {
         members: {
           some: { userId },
         },
+      },
+      include: {
+        members: {
+          include: {
+            user: true,
+            role: true,
+          },
+        },
+        statuses:true,
+        projects: true,
       },
     });
   }
