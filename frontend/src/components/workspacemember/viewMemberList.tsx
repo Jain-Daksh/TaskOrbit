@@ -21,11 +21,13 @@ interface Member {
 }
 
 interface WorkspaceMembersTableProps {
+  isAdmin: boolean;
   members: Member[];
   onRemoveMember?: (memberId: string) => Promise<void>; // Callback to remove a member
 }
 
 export const WorkspaceMembersTable: React.FC<WorkspaceMembersTableProps> = ({
+  isAdmin = false,
   members,
   onRemoveMember,
 }) => {
@@ -62,7 +64,7 @@ export const WorkspaceMembersTable: React.FC<WorkspaceMembersTableProps> = ({
       key: 'joinedAt',
       render: (date: string) => new Date(date).toLocaleDateString(),
     },
-    {
+    isAdmin && {
       title: 'Action',
       key: 'action',
       render: (_: any, record: Member) =>
@@ -79,7 +81,7 @@ export const WorkspaceMembersTable: React.FC<WorkspaceMembersTableProps> = ({
           </Popconfirm>
         ) : null,
     },
-  ];
+  ].filter(Boolean);
 
   if (members.length === 0) {
     return <Text type='secondary'>No members yet.</Text>;
