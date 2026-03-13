@@ -1,22 +1,13 @@
 import { useEffect, useState } from 'react';
-import {
-  Card,
-  Row,
-  Col,
-  Button,
-  Typography,
-  Spin,
-  Space,
-  Tabs,
-  Table,
-  App,
-} from 'antd';
+import { Button, Typography, Spin, Space, Tabs, Table, App } from 'antd';
 import { PlusOutlined, TeamOutlined } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api/axiosService';
 import './WorkspaceDetailPage.css';
 import { StatusManager } from '../../components/status/status';
 import { WorkspaceMembersTable } from '../../components/workspacemember/viewMemberList';
+import { AddMemberModal } from '../../components/workspacemember/addMemberModel';
+import { useAuthStore } from '../../store/authStore';
 
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
@@ -68,7 +59,14 @@ export default function WorkspaceDetailPage() {
 
   const [workspace, setWorkspace] = useState<Workspace | null>(null);
   const [loading, setLoading] = useState(false);
+  const [addMemberVisible, setAddMemberVisible] = useState(false);
+  const { user } = useAuthStore();
 
+  const currentUserId = user.id;
+  const currentUser = workspace?.members.find(
+    (m) => m.user.id === currentUserId,
+  );
+  const isAdmin = currentUser?.role.name === 'Admin';
   const fetchWorkspaceDetail = async () => {
     setLoading(true);
     try {
@@ -87,6 +85,27 @@ export default function WorkspaceDetailPage() {
     }
   };
 
+  const removeMember = async (memberId: string) => {
+    try {
+      await api.delete(`/workspacemember/${workspace?.id}/members/${memberId}`);
+      setWorkspace((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          members: prev.members.filter((member) => member.id !== memberId),
+        };
+      });
+    } catch (err: any) {
+      message.error(err.response?.data?.message || 'Failed to remove member');
+      throw err;
+    }
+  };
+
+  // Callback after adding a member
+  const handleMemberAdded = () => {
+    fetchWorkspaceDetail(); // refresh members
+  };
+
   useEffect(() => {
     if (id) fetchWorkspaceDetail();
   }, [id]);
@@ -99,32 +118,6 @@ export default function WorkspaceDetailPage() {
     );
   }
 
-  // Columns for Members Table
-  const memberColumns = [
-    {
-      title: 'Name',
-      dataIndex: ['user', 'name'],
-      key: 'name',
-    },
-    {
-      title: 'Email',
-      dataIndex: ['user', 'email'],
-      key: 'email',
-    },
-    {
-      title: 'Role',
-      dataIndex: ['role', 'name'],
-      key: 'role',
-    },
-    {
-      title: 'Joined At',
-      dataIndex: 'joinedAt',
-      key: 'joinedAt',
-      render: (date: string) => new Date(date).toLocaleDateString(),
-    },
-  ];
-
-  // Columns for Projects Table
   const projectColumns = [
     {
       title: 'Project Name',
@@ -153,28 +146,8 @@ export default function WorkspaceDetailPage() {
     },
   ];
 
-  const statusColumns = [
-    {
-      title: 'Status Name',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: 'Is Active',
-      dataIndex: 'isActive',
-      key: 'isActive',
-      render: (active: boolean) => (active ? 'Yes' : 'No'),
-    },
-    {
-      title: 'Order',
-      dataIndex: 'order',
-      key: 'order',
-    },
-  ];
-
   return (
     <div className='workspace-detail-page'>
-      {/* HEADER */}
       <div className='workspace-detail-header'>
         <div>
           <Title level={2}>{workspace.name}</Title>
@@ -182,13 +155,14 @@ export default function WorkspaceDetailPage() {
         </div>
 
         <Space>
-          <Button
-            icon={<TeamOutlined />}
-            onClick={() => message.info('Manage members modal coming soon')}
-          >
-            Members
-          </Button>
-
+          {isAdmin && (
+            <Button
+              icon={<TeamOutlined />}
+              onClick={() => setAddMemberVisible(true)}
+            >
+              Add Member
+            </Button>
+          )}
           <Button
             type='primary'
             icon={<PlusOutlined />}
@@ -199,10 +173,22 @@ export default function WorkspaceDetailPage() {
         </Space>
       </div>
 
-      {/* TABS: Members / Projects */}
+      {/* Add Member Modal */}
+      <AddMemberModal
+        workspaceId={workspace.id}
+        visible={addMemberVisible}
+        onClose={() => setAddMemberVisible(false)}
+        onMemberAdded={handleMemberAdded}
+      />
+
+      {/* TABS */}
       <Tabs defaultActiveKey='members' style={{ marginTop: 24 }}>
         <TabPane tab={`Members (${workspace.members.length})`} key='members'>
-          <WorkspaceMembersTable members={workspace.members} />
+          <WorkspaceMembersTable
+            isAdmin={isAdmin}
+            members={workspace.members}
+            onRemoveMember={removeMember}
+          />
         </TabPane>
 
         <TabPane tab={`Projects (${workspace.projects.length})`} key='projects'>
@@ -219,6 +205,7 @@ export default function WorkspaceDetailPage() {
             />
           )}
         </TabPane>
+
         <TabPane tab={`Status (${workspace.statuses.length})`} key='statuses'>
           {workspace.statuses.length === 0 ? (
             <Text type='secondary'>
