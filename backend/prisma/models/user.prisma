@@ -23,4 +23,6 @@ model User {
   statuses Status[] @relation("StatusCreatedBy")
 
   updatedStatus Status[] @relation("StatusUpdatedBy")
+
+  otps OTP[]
 }

@@ -2,8 +2,9 @@ import { prisma } from '../../prisma/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
+import { config } from '../../config/bussiness.Config';
 
-const SALT_ROUNDS = 10;
+const SALT_ROUNDS = config?.SALT_ROUNDS;
 const JWT_SECRET = process.env.JWT_SECRET!;
 
 export class AuthService {
