@@ -51,7 +51,7 @@ Optional: Delete workspace (can be Phase-2)
 5. Workspace Member Module
 POST   /workspace/member           ✅ done
 DELETE /workspace/member/:userId   ✅ done
-GET    /workspace/:id/members      ❌ missing
+GET    /workspace/:id/members      ❌ missing done
 
 Phase-1 minimum required:
 
