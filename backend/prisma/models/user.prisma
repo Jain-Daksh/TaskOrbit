@@ -25,4 +25,6 @@ model User {
   updatedStatus Status[] @relation("StatusUpdatedBy")
 
   otps OTP[]
+
+  passwordResetTokens PasswordResetToken[]
 }
