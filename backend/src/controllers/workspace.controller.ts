@@ -51,7 +51,7 @@ export class WorkspaceController {
     }
   }
 
-  static async editWorkspace(req: Request, res: Response) {
+  static async udapteWorkspace(req: Request, res: Response) {
     const userId = req.user!.userId;
     const workspaceId = req.params.id as string;
     const name = req.body.name;
