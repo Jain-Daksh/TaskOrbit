@@ -71,4 +71,24 @@ export class WorkspaceController {
       );
     }
   }
+
+  static async deleteWorkspace(req: Request, res: Response) {
+    const userId = req.user!.userId;
+    const workspaceId = req.params.id as string;
+
+    try {
+      const deletedWorkspace = await workspaceService.deleteWorkspace(
+        workspaceId,
+        userId,
+      );
+      return Success(res, 'Workspace deleted successfully', deletedWorkspace);
+    } catch (error: any) {
+      return Failed(
+        res,
+        error.message || 'Failed to delete workspace',
+        400,
+        error,
+      );
+    }
+  }
 }

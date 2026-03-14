@@ -7,5 +7,8 @@ router.get('/', (req, res) => WorkspaceController.getWorkspaces(req, res));
 router.post('/', (req, res) => WorkspaceController.createWorkspace(req, res));
 router.get('/:id', (req, res) => WorkspaceController.getWorkspace(req, res));
 router.put('/:id', (req, res) => WorkspaceController.udapteWorkspace(req, res));
+router.delete('/:id', (req, res) =>
+  WorkspaceController.deleteWorkspace(req, res),
+);
 
 export default router;
