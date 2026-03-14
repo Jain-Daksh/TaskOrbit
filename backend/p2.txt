@@ -1,0 +1,130 @@
+Phase-1 API Status
+1. Auth Module
+POST   /auth/signup        ✅ done
+POST   /auth/login         ✅ done
+POST   /auth/refresh       ✅ done
+POST   /auth/logout        ❌ missing done
+POST   /auth/forgot-password ❌ missing done
+
+Phase-1 minimum required:
+
+signup ✅
+
+login ✅
+
+refresh ✅
+
+Optional for Phase-1: logout, forgot/reset password
+
+2. User Module
+GET    /user/profile       ✅ done
+PATCH  /user/profile       ✅ done
+PATCH  /user/password      ✅ done
+
+Phase-1 minimum required: all three ✅
+
+3. OTP Module
+POST   /otp/send           ✅ done
+POST   /otp/verify         ✅ done
+
+Phase-1 minimum required: both ✅
+
+4. Workspace Module
+POST   /workspace                  ✅ done
+GET    /workspace                  ✅ done
+GET    /workspace/:id              ✅ done
+PATCH  /workspace/:id              ✅ done
+DELETE /workspace/:id              ❌ missing done
+
+Phase-1 minimum required:
+
+Create workspace ✅
+
+Get user workspaces ✅
+
+Get single workspace ✅
+
+Update workspace ✅
+
+Optional: Delete workspace (can be Phase-2)
+
+5. Workspace Member Module
+POST   /workspace/member           ✅ done
+DELETE /workspace/member/:userId   ✅ done
+GET    /workspace/:id/members      ❌ missing done
+
+Phase-1 minimum required:
+
+Add member ✅
+
+Remove member ✅
+
+Optional: list workspace members (for UI)
+
+6. Project Module
+POST   /projects                    ✅ done
+GET    /projects/:workspaceId       ✅ done
+GET    /projects/:workspaceId/:projectId ✅ done
+PATCH  /projects/:projectId         ✅ done
+DELETE /projects/:projectId         ✅ done
+
+Phase-1 minimum required: all ✅
+
+7. Status Module
+POST   /status                     ✅ done
+GET    /status/:workspaceId        ✅ done
+GET    /status/:statusId           ✅ done
+PATCH  /status/:statusId           ✅ done
+DELETE /status/:statusId           ✅ done
+POST   /status/reorder             ✅ done
+
+Phase-1 minimum required: all ✅
+
+8. Task Module
+POST   /tasks                       ✅ done
+GET    /projects/:projectId/tasks   ✅ done
+GET    /tasks/:taskId               ✅ done
+PATCH  /tasks/:taskId               ✅ done
+DELETE /tasks/:taskId               ✅ done
+
+Phase-1 minimum required: all ✅
+
+Optional (Phase-2): separate endpoints for assign, change status, change priority, task history
+
+9. Comment Module
+POST   /tasks/:taskId/comments      ❌ missing
+GET    /tasks/:taskId/comments      ❌ missing
+PATCH  /comments/:commentId         ❌ missing
+DELETE /comments/:commentId         ❌ missing
+
+Phase-1 minimum required:
+
+POST /tasks/:taskId/comments ✅ required
+
+GET /tasks/:taskId/comments ✅ required
+
+Optional: PATCH /comments/:commentId, DELETE /comments/:commentId (can be Phase-2)
+
+✅ Summary for Phase-1
+Module	Completed	Missing	Phase-1 Minimum Required
+Auth	signup, login, refresh	logout, forgot/reset password	signup, login, refresh
+User	profile get/update, password update	-	all done
+OTP	send, verify	-	all done
+Workspace	create, list, get, update	delete	create, list, get, update
+Workspace Member	add, remove	list members	add, remove
+Project	all CRUD ✅	-	all done
+Status	all ✅	-	all done
+Task	all CRUD ✅	optional assign/status/history	all done
+Comment	-	CRUD missing	create & get ✅
+
+✅ Phase-1 Requirements Fully Covered (if you implement minimal Comment endpoints).
+
+❌ Phase-2 / optional:
+
+Auth logout, forgot/reset password
+
+Workspace delete
+
+Comment update/delete
+
+Task history, separate assign/status endpoints

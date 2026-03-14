@@ -62,4 +62,29 @@ export class AuthController {
       return Failed(res, err.message || 'Could not refresh token', 400, err);
     }
   }
+
+  static async forgotPassword(req: Request, res: Response) {
+    try {
+      const { email } = req.body;
+      if (!email) throw new Error('Email is required');
+
+      const result = await AuthService.forgotPassword(email);
+      return Success(res, result.message, null);
+    } catch (err: any) {
+      return Failed(res, err.message || 'Failed to send reset email', 400, err);
+    }
+  }
+
+  static async resetPassword(req: Request, res: Response) {
+    try {
+      const { token, newPassword } = req.body;
+      if (!token || !newPassword)
+        throw new Error('Token and new password are required');
+
+      const result = await AuthService.resetPassword(token, newPassword);
+      return Success(res, result.message, null);
+    } catch (err: any) {
+      return Failed(res, err.message || 'Failed to reset password', 400, err);
+    }
+  }
 }

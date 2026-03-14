@@ -1,0 +1,70 @@
+POST /auth/signup           done
+POST /auth/login            done
+POST /auth/refresh          done
+POST /auth/logout           missing
+POST /auth/logout-all       missing
+GET  /auth/me               missing
+
+POST /otp/send              done
+POST /otp/verify            done
+POST /otp/resend            missing
+GET  /otp/status            missing
+
+GET   /users/me             done
+PATCH /users/me             done
+PATCH /users/password       done
+GET   /users/search         missing
+GET   /users/:id            missing
+GET   /users/workspaces     missing
+DELETE /users/me            missing
+PATCH /users/avatar         missing
+
+
+POST   /workspaces                done
+GET    /workspaces                done
+GET    /workspaces/:id            done
+PATCH  /workspaces/:id            done
+DELETE /workspaces/:id            missing
+
+POST   /workspaces/members            done
+DELETE /workspaces/:workspaceId/members/:userId   done
+GET    /workspaces/:workspaceId/members            missing
+PATCH  /workspaces/:workspaceId/members/:userId/role   missing
+POST   /workspaces/:workspaceId/members/invite     missing
+
+POST   /projects                              done
+GET    /workspaces/:workspaceId/projects      done
+GET    /workspaces/:workspaceId/projects/:projectId   done
+PATCH  /projects/:projectId                   done
+DELETE /projects/:projectId                   done
+
+GET    /projects/:projectId/tasks             missing
+GET    /projects/:projectId/stats             missing
+PATCH  /projects/:projectId/archive           missing
+
+POST   /statuses                     done
+GET    /workspaces/:workspaceId/statuses    done
+GET    /statuses/:statusId           done
+PATCH  /statuses/:statusId           done
+DELETE /statuses/:statusId           done
+PATCH  /statuses/reorder             done
+
+GET    /workspaces/:workspaceId/statuses/all      missing
+PATCH  /statuses/:statusId/activate               missing
+
+
+POST   /tasks                          done
+GET    /projects/:projectId/tasks      done
+GET    /tasks/:taskId                  done
+PATCH  /tasks/:taskId                  done
+DELETE /tasks/:taskId                  done
+
+PATCH  /tasks/:taskId/assign           missing
+PATCH  /tasks/:taskId/move-status      missing
+PATCH  /tasks/:taskId/change-priority  missing
+GET    /tasks/:taskId/history          missing
+
+POST   /tasks/:taskId/comments         missing
+GET    /tasks/:taskId/comments         missing
+PATCH  /comments/:commentId            missing
+DELETE /comments/:commentId            missing
