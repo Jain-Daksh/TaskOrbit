@@ -46,7 +46,15 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
 
   return (
     <>
-      <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+      <div
+        style={{
+          display: 'flex',
+          gap: 16,
+          alignItems: 'flex-start',
+          overflowX: 'auto', // enables horizontal scroll
+          paddingBottom: 10,
+        }}
+      >
         {statuses.map((status) => {
           const statusTasks = tasks.filter(
             (task) => task.statusId === status.id,
@@ -56,7 +64,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
             <div
               key={status.id}
               style={{
-                flex: 1,
+                flex: '0 0 300px', // fixed width for each column
                 background: '#f0f2f5',
                 borderRadius: 6,
                 padding: 10,
