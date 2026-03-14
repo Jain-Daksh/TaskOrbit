@@ -273,6 +273,7 @@ export default function WorkspaceDetailPage() {
             </Text>
           ) : (
             <StatusManager
+              isAdmin={isAdmin}
               statuses={workspace.statuses}
               workspaceId={workspace.id}
             />
