@@ -5,7 +5,6 @@ POST   /auth/login         ✅ done
 POST   /auth/refresh       ✅ done
 POST   /auth/logout        ❌ missing
 POST   /auth/forgot-password ❌ missing
-POST   /auth/reset-password  ❌ missing
 
 Phase-1 minimum required:
 
