@@ -5,13 +5,12 @@ const router = createProtectedRouter();
 
 router.post('/', (req, res) => ProjectController.createProject(req, res));
 
-router.get('/workspace/:workspaceId', (req, res) =>
-  ProjectController.getProjects(req, res),
-);
-
 router.get('/workspace/:workspaceId/:projectId', (req, res) =>
   ProjectController.getProject(req, res),
 );
+// router.get('/workspace/:workspaceId', (req, res) =>
+//   ProjectController.getProjects(req, res),
+// );
 
 router.put('/:projectId', (req, res) =>
   ProjectController.updateProject(req, res),

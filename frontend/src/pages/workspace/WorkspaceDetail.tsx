@@ -165,7 +165,7 @@ export default function WorkspaceDetailPage() {
       render: (name: string, record: Project) => (
         <Button
           type='link'
-          onClick={() => navigate(`/app/projects/${record.id}`)}
+          onClick={() => navigate(`/app/projects/${id}/${record.id}`)}
         >
           {name}
         </Button>

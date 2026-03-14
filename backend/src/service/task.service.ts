@@ -31,7 +31,7 @@ export class TaskService {
         title: data.title,
         description: data.description,
         dueDate: data.dueDate,
-        priority: data.priority,
+        priority: data.priority ?? 'LOW',
         projectId: data.projectId,
         statusId: data.statusId,
         assigneeId: data.assigneeId,

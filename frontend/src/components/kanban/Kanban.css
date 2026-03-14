@@ -1,0 +1,13 @@
+.kanban-board {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+}
+
+.kanban-column {
+  min-width: 280px;
+}
+
+.task-card {
+  margin-bottom: 10px;
+}

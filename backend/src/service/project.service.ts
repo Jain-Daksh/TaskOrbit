@@ -72,6 +72,11 @@ export class ProjectService {
           },
         },
       },
+      include: {
+        workspace: true,
+        creator: true,
+        tasks: true,
+      },
     });
   }
 
