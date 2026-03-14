@@ -50,4 +50,25 @@ export class WorkspaceController {
       );
     }
   }
+
+  static async editWorkspace(req: Request, res: Response) {
+    const userId = req.user!.userId;
+    const workspaceId = req.params.id as string;
+    const name = req.body.name;
+    try {
+      const workspace = await workspaceService.updateWorkspace(
+        workspaceId,
+        userId,
+        name,
+      );
+      return Success(res, 'Workspace Info', workspace);
+    } catch (error: any) {
+      return Failed(
+        res,
+        error.message || 'Failed to update workspace info',
+        400,
+        error,
+      );
+    }
+  }
 }
