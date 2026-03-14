@@ -1,6 +1,16 @@
 import { useEffect, useState } from 'react';
-import { Button, Typography, Spin, Space, Tabs, Table, App } from 'antd';
-import { PlusOutlined, TeamOutlined } from '@ant-design/icons';
+import {
+  Button,
+  Typography,
+  Spin,
+  Space,
+  Tabs,
+  Table,
+  App,
+  Modal,
+  Input,
+} from 'antd';
+import { PlusOutlined, TeamOutlined, EditOutlined } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api/axiosService';
 import './WorkspaceDetailPage.css';
@@ -60,6 +70,9 @@ export default function WorkspaceDetailPage() {
   const [workspace, setWorkspace] = useState<Workspace | null>(null);
   const [loading, setLoading] = useState(false);
   const [addMemberVisible, setAddMemberVisible] = useState(false);
+  const [editVisible, setEditVisible] = useState(false);
+  const [workspaceName, setWorkspaceName] = useState('');
+  const [saving, setSaving] = useState(false);
   const { user } = useAuthStore();
 
   const currentUserId = user.id;
@@ -98,6 +111,32 @@ export default function WorkspaceDetailPage() {
     } catch (err: any) {
       message.error(err.response?.data?.message || 'Failed to remove member');
       throw err;
+    }
+  };
+
+  const openEditModal = () => {
+    setWorkspaceName(workspace?.name || '');
+    setEditVisible(true);
+  };
+
+  const updateWorkspace = async () => {
+    try {
+      setSaving(true);
+
+      await api.put(`/workspaces/${workspace?.id}`, {
+        name: workspaceName,
+      });
+
+      setWorkspace((prev) => (prev ? { ...prev, name: workspaceName } : prev));
+
+      message.success('Workspace updated successfully');
+      setEditVisible(false);
+    } catch (err: any) {
+      message.error(
+        err.response?.data?.message || 'Failed to update workspace',
+      );
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -156,13 +195,20 @@ export default function WorkspaceDetailPage() {
 
         <Space>
           {isAdmin && (
-            <Button
-              icon={<TeamOutlined />}
-              onClick={() => setAddMemberVisible(true)}
-            >
-              Add Member
-            </Button>
+            <>
+              <Button icon={<EditOutlined />} onClick={openEditModal}>
+                Edit
+              </Button>
+
+              <Button
+                icon={<TeamOutlined />}
+                onClick={() => setAddMemberVisible(true)}
+              >
+                Add Member
+              </Button>
+            </>
           )}
+
           <Button
             type='primary'
             icon={<PlusOutlined />}
@@ -180,6 +226,20 @@ export default function WorkspaceDetailPage() {
         onClose={() => setAddMemberVisible(false)}
         onMemberAdded={handleMemberAdded}
       />
+
+      <Modal
+        title='Edit Workspace'
+        open={editVisible}
+        onCancel={() => setEditVisible(false)}
+        onOk={updateWorkspace}
+        confirmLoading={saving}
+      >
+        <Input
+          value={workspaceName}
+          onChange={(e) => setWorkspaceName(e.target.value)}
+          placeholder='Workspace name'
+        />
+      </Modal>
 
       {/* TABS */}
       <Tabs defaultActiveKey='members' style={{ marginTop: 24 }}>
@@ -213,6 +273,7 @@ export default function WorkspaceDetailPage() {
             </Text>
           ) : (
             <StatusManager
+              isAdmin={isAdmin}
               statuses={workspace.statuses}
               workspaceId={workspace.id}
             />

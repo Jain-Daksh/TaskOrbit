@@ -50,4 +50,45 @@ export class WorkspaceController {
       );
     }
   }
+
+  static async udapteWorkspace(req: Request, res: Response) {
+    const userId = req.user!.userId;
+    const workspaceId = req.params.id as string;
+    const name = req.body.name;
+    try {
+      const workspace = await workspaceService.updateWorkspace(
+        workspaceId,
+        userId,
+        name,
+      );
+      return Success(res, 'Workspace Info', workspace);
+    } catch (error: any) {
+      return Failed(
+        res,
+        error.message || 'Failed to update workspace info',
+        400,
+        error,
+      );
+    }
+  }
+
+  static async deleteWorkspace(req: Request, res: Response) {
+    const userId = req.user!.userId;
+    const workspaceId = req.params.id as string;
+
+    try {
+      const deletedWorkspace = await workspaceService.deleteWorkspace(
+        workspaceId,
+        userId,
+      );
+      return Success(res, 'Workspace deleted successfully', deletedWorkspace);
+    } catch (error: any) {
+      return Failed(
+        res,
+        error.message || 'Failed to delete workspace',
+        400,
+        error,
+      );
+    }
+  }
 }

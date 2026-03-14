@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import { config } from '../../config/bussiness.Config';
+import nodemailer from 'nodemailer';
 
 const SALT_ROUNDS = config?.SALT_ROUNDS;
 const JWT_SECRET = process.env.JWT_SECRET!;
@@ -87,5 +88,69 @@ export class AuthService {
     });
 
     return { accessToken, refreshToken: newRefreshToken };
+  }
+
+  static async logout(refreshToken: string) {
+    await prisma.refreshToken.deleteMany({ where: { token: refreshToken } });
+    return { message: 'Logged out successfully' };
+  }
+
+  static async forgotPassword(email: string) {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) throw new Error('No user found with this email');
+
+    const resetToken = jwt.sign({ userId: user.id }, JWT_SECRET, {
+      expiresIn: '1h',
+    });
+
+    await prisma.passwordResetToken.create({
+      data: {
+        userId: user.id,
+        token: resetToken,
+        expiresAt: new Date(Date.now() + 60 * 60 * 1000), // 1 hour
+      },
+    });
+
+    const transporter = nodemailer.createTransport({
+      host: config.SMTP.HOST,
+      port: config.SMTP.PORT,
+      auth: {
+        user: config.SMTP.USER,
+        pass: config.SMTP.PASS,
+      },
+    });
+
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+
+    await transporter.sendMail({
+      from: `"${config.SMTP.FROM_NAME}" <${config.SMTP.FROM_EMAIL}>`,
+      to: email,
+      subject: 'Password Reset Request',
+      html: `<p>Click <a href="${resetLink}">here</a> to reset your password. The link is valid for 1 hour.</p>`,
+    });
+
+    return { message: 'Password reset email sent' };
+  }
+  static async resetPassword(token: string, newPassword: string) {
+    const record = await prisma.passwordResetToken.findUnique({
+      where: { token },
+    });
+    if (!record) throw new Error('Invalid or expired reset token');
+
+    if (record.expiresAt < new Date()) {
+      await prisma.passwordResetToken.delete({ where: { token } });
+      throw new Error('Reset token expired');
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
+
+    await prisma.user.update({
+      where: { id: record.userId },
+      data: { password: hashedPassword },
+    });
+
+    await prisma.passwordResetToken.delete({ where: { token } });
+
+    return { message: 'Password reset successfully' };
   }
 }

@@ -86,7 +86,7 @@ export class WorkspaceService {
             role: true,
           },
         },
-        statuses:true,
+        statuses: true,
         projects: true,
       },
     });
@@ -119,17 +119,39 @@ export class WorkspaceService {
   }
 
   async deleteWorkspace(workspaceId: string, userId: string) {
-    const workspace = await prisma.workspace.findFirst({
-      where: {
-        id: workspaceId,
-        ownerId: userId,
-      },
-    });
+    return await prisma.$transaction(async (tx) => {
+      const workspace = await tx.workspace.findFirst({
+        where: { id: workspaceId, ownerId: userId },
+      });
+      if (!workspace) throw new Error('Only owner can delete workspace');
 
-    if (!workspace) throw new Error('Only owner can delete workspace');
+      await tx.workspaceMember.deleteMany({
+        where: { workspaceId },
+      });
 
-    return prisma.workspace.delete({
-      where: { id: workspaceId },
+      const projects = await tx.project.findMany({
+        where: { workspaceId },
+        select: { id: true },
+      });
+      const projectIds = projects.map((p) => p.id);
+
+      if (projectIds.length > 0) {
+        await tx.task.deleteMany({
+          where: { projectId: { in: projectIds } },
+        });
+
+        await tx.status.deleteMany({
+          where: { projectId: { in: projectIds } },
+        });
+
+        await tx.project.deleteMany({
+          where: { id: { in: projectIds } },
+        });
+      }
+
+      return await tx.workspace.delete({
+        where: { id: workspaceId },
+      });
     });
   }
 }

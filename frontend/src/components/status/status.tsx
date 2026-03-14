@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   Button,
@@ -37,13 +37,21 @@ interface Status {
 interface Props {
   statuses: Status[];
   workspaceId: string;
+  isAdmin: boolean;
   refreshWorkspace?: () => void;
 }
 
-export const StatusManager: React.FC<Props> = ({ statuses, workspaceId }) => {
+export const StatusManager: React.FC<Props> = ({
+  statuses,
+  workspaceId,
+  isAdmin = false,
+}) => {
   const [statusList, setStatusList] = useState<Status[]>(statuses);
   const [editingStatus, setEditingStatus] = useState<Status | null>(null);
   const [newName, setNewName] = useState('');
+  const [addModalOpen, setAddModalOpen] = useState(false);
+  const [newStatusName, setNewStatusName] = useState('');
+  const [creating, setCreating] = useState(false);
 
   const sensors = useSensors(useSensor(PointerSensor));
 
@@ -75,7 +83,7 @@ export const StatusManager: React.FC<Props> = ({ statuses, workspaceId }) => {
   const handleSaveEdit = async () => {
     if (!editingStatus) return;
     try {
-      await api.put(`/statuses/${editingStatus.id}`, { name: newName });
+      await api.put(`/status/${editingStatus.id}`, { name: newName });
       setStatusList((prev) =>
         prev.map((s) =>
           s.id === editingStatus.id ? { ...s, name: newName } : s,
@@ -88,15 +96,49 @@ export const StatusManager: React.FC<Props> = ({ statuses, workspaceId }) => {
     }
   };
 
-  const handleDeactivate = async (status: Status) => {
+  const handleDelete = async (status: Status) => {
+    console.log('ee');
     try {
-      await api.delete(`/statuses/${status.id}`);
+      await api.delete(`/status/${status.id}`);
+
       setStatusList((prev) => prev.filter((s) => s.id !== status.id));
-      message.success('Status marked inactive');
+
+      message.success('Status deleted');
     } catch (err: any) {
-      message.error(
-        err.response?.data?.message || 'Failed to deactivate status',
-      );
+      message.error(err.response?.data?.message || 'Failed to delete status');
+    }
+  };
+
+  useEffect(() => {
+    setStatusList(statuses);
+  }, [statuses]);
+
+  const handleCreateStatus = async () => {
+    if (!newStatusName.trim()) {
+      message.error('Status name required');
+      return;
+    }
+
+    try {
+      setCreating(true);
+
+      const res = await api.post('/status', {
+        name: newStatusName,
+        workspaceId,
+      });
+
+      const newStatus = res.data.data;
+
+      setStatusList((prev) => [...prev, newStatus]);
+
+      message.success('Status created');
+
+      setNewStatusName('');
+      setAddModalOpen(false);
+    } catch (err: any) {
+      message.error(err.response?.data?.message || 'Failed to create status');
+    } finally {
+      setCreating(false);
     }
   };
 
@@ -116,21 +158,25 @@ export const StatusManager: React.FC<Props> = ({ statuses, workspaceId }) => {
     {
       title: 'Actions',
       key: 'actions',
-      render: (_: any, record: Status) => (
-        <Space>
-          <Button type='link' onClick={() => handleEdit(record)}>
-            Edit
-          </Button>
-          <Popconfirm
-            title='Are you sure to deactivate?'
-            onConfirm={() => handleDeactivate(record)}
-          >
-            <Button type='link' danger>
-              Deactivate
+      render: (_: any, record: Status) =>
+        isAdmin && (
+          <Space>
+            <Button type='link' onClick={() => handleEdit(record)}>
+              Edit
             </Button>
-          </Popconfirm>
-        </Space>
-      ),
+
+            <Popconfirm
+              title='Delete this status?'
+              okText='Yes'
+              cancelText='No'
+              onConfirm={() => handleDelete(record)}
+            >
+              <Button type='link' danger>
+                Delete
+              </Button>
+            </Popconfirm>
+          </Space>
+        ),
     },
   ];
 
@@ -168,6 +214,13 @@ export const StatusManager: React.FC<Props> = ({ statuses, workspaceId }) => {
             dataSource={statusList}
             columns={columns}
             rowKey='id'
+            title={() =>
+              isAdmin && (
+                <Button type='primary' onClick={() => setAddModalOpen(true)}>
+                  Add Status
+                </Button>
+              )
+            }
             components={{
               body: { row: SortableRow },
             }}
@@ -175,7 +228,6 @@ export const StatusManager: React.FC<Props> = ({ statuses, workspaceId }) => {
           />
         </SortableContext>
       </DndContext>
-
       <Modal
         title='Edit Status'
         open={!!editingStatus}
@@ -188,6 +240,20 @@ export const StatusManager: React.FC<Props> = ({ statuses, workspaceId }) => {
           placeholder='Status name'
         />
       </Modal>
+      <Modal
+        title='Add Status'
+        open={addModalOpen}
+        confirmLoading={creating}
+        onOk={handleCreateStatus}
+        onCancel={() => setAddModalOpen(false)}
+      >
+        <Input
+          placeholder='Status name'
+          value={newStatusName}
+          onChange={(e) => setNewStatusName(e.target.value)}
+        />
+      </Modal>
+      ;
     </div>
   );
 };
