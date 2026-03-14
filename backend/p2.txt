@@ -3,8 +3,8 @@ Phase-1 API Status
 POST   /auth/signup        ✅ done
 POST   /auth/login         ✅ done
 POST   /auth/refresh       ✅ done
-POST   /auth/logout        ❌ missing
-POST   /auth/forgot-password ❌ missing
+POST   /auth/logout        ❌ missing done
+POST   /auth/forgot-password ❌ missing done
 
 Phase-1 minimum required:
 
@@ -34,7 +34,7 @@ POST   /workspace                  ✅ done
 GET    /workspace                  ✅ done
 GET    /workspace/:id              ✅ done
 PATCH  /workspace/:id              ✅ done
-DELETE /workspace/:id              ❌ missing
+DELETE /workspace/:id              ❌ missing done
 
 Phase-1 minimum required:
 
