@@ -73,6 +73,9 @@ export default function WorkspaceDetailPage() {
   const [editVisible, setEditVisible] = useState(false);
   const [workspaceName, setWorkspaceName] = useState('');
   const [saving, setSaving] = useState(false);
+  const [projectModalVisible, setProjectModalVisible] = useState(false);
+  const [projectName, setProjectName] = useState('');
+  const [creatingProject, setCreatingProject] = useState(false);
   const { user } = useAuthStore();
 
   const currentUserId = user.id;
@@ -140,6 +143,42 @@ export default function WorkspaceDetailPage() {
     }
   };
 
+  const createProject = async () => {
+    if (!projectName.trim()) {
+      message.warning('Project name is required');
+      return;
+    }
+
+    try {
+      setCreatingProject(true);
+
+      const res = await api.post('/projects', {
+        name: projectName,
+        workspaceId: workspace?.id,
+      });
+
+      const newProject = res.data.data;
+
+      setWorkspace((prev) =>
+        prev
+          ? {
+              ...prev,
+              projects: [...prev.projects, newProject],
+            }
+          : prev,
+      );
+
+      message.success('Project created successfully');
+
+      setProjectModalVisible(false);
+      setProjectName('');
+    } catch (err: any) {
+      message.error(err.response?.data?.message || 'Failed to create project');
+    } finally {
+      setCreatingProject(false);
+    }
+  };
+
   // Callback after adding a member
   const handleMemberAdded = () => {
     fetchWorkspaceDetail(); // refresh members
@@ -165,7 +204,7 @@ export default function WorkspaceDetailPage() {
       render: (name: string, record: Project) => (
         <Button
           type='link'
-          onClick={() => navigate(`/app/projects/${record.id}`)}
+          onClick={() => navigate(`/app/projects/${id}/${record.id}`)}
         >
           {name}
         </Button>
@@ -212,7 +251,7 @@ export default function WorkspaceDetailPage() {
           <Button
             type='primary'
             icon={<PlusOutlined />}
-            onClick={() => message.info('Create project modal here')}
+            onClick={() => setProjectModalVisible(true)}
           >
             New Project
           </Button>
@@ -238,6 +277,20 @@ export default function WorkspaceDetailPage() {
           value={workspaceName}
           onChange={(e) => setWorkspaceName(e.target.value)}
           placeholder='Workspace name'
+        />
+      </Modal>
+
+      <Modal
+        title='Create Project'
+        open={projectModalVisible}
+        onCancel={() => setProjectModalVisible(false)}
+        onOk={createProject}
+        confirmLoading={creatingProject}
+      >
+        <Input
+          placeholder='Project name'
+          value={projectName}
+          onChange={(e) => setProjectName(e.target.value)}
         />
       </Modal>
 

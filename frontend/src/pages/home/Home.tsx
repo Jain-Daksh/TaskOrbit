@@ -27,7 +27,7 @@ export default function Home() {
         <div className='hero-image'>
           <img
             src='https://via.placeholder.com/500x350'
-            alt='Task Manager Preview'
+            alt='Task Orbit Preview'
           />
         </div>
       </section>
