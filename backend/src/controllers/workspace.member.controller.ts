@@ -42,4 +42,19 @@ export class WorkspaceMemberController {
       return Failed(res, error.message, 400, error);
     }
   }
+
+  static async getAllMembers(req: Request, res: Response) {
+    try {
+      const workspaceId = req.params.id as string;
+      const userId = req.user!.userId;
+
+      const memberList = await workspaceService.getWorkspaceMembers(
+        workspaceId,
+        userId,
+      );
+      return Success(res, 'All Member recieved', memberList);
+    } catch (error: any) {
+      return Failed(res, error.message, 400, error);
+    }
+  }
 }

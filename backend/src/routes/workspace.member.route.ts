@@ -9,4 +9,8 @@ router.post('/:id/members', (req, res) =>
 router.delete('/:id/members/:memberId', (req, res) =>
   WorkspaceMemberController.removeMember(req, res),
 );
+
+router.get('/:id', (req, res) => {
+  WorkspaceMemberController.getAllMembers(req, res);
+});
 export default router;

@@ -18,14 +18,15 @@ interface Status {
 interface KanbanBoardProps {
   statuses: Status[];
   tasks: Task[];
-  refresh: () => void;
-  onAddTask?: (statusId: string, title: string) => void; // now receives title
+  onAddTask?: (statusId: string, title: string) => void;
+  onTaskClick?: (taskId: string) => void; // new prop
 }
 
 export const KanbanBoard: React.FC<KanbanBoardProps> = ({
   statuses,
   tasks,
   onAddTask,
+  onTaskClick,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [currentStatus, setCurrentStatus] = useState<string | null>(null);
@@ -51,7 +52,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
           display: 'flex',
           gap: 16,
           alignItems: 'flex-start',
-          overflowX: 'auto', // enables horizontal scroll
+          overflowX: 'auto',
           paddingBottom: 10,
         }}
       >
@@ -64,7 +65,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
             <div
               key={status.id}
               style={{
-                flex: '0 0 300px', // fixed width for each column
+                flex: '0 0 300px', // fixed column width
                 background: '#f0f2f5',
                 borderRadius: 6,
                 padding: 10,
@@ -84,6 +85,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
                       key={task.id}
                       size='small'
                       style={{ marginBottom: 8, cursor: 'pointer' }}
+                      onClick={() => onTaskClick && onTaskClick(task.id)} // open task
                     >
                       {task.title}
                     </Card>
