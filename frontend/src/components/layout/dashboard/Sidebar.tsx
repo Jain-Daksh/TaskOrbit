@@ -67,7 +67,7 @@ export default function Sidebar() {
           textAlign: collapsed ? 'center' : 'left',
         }}
       >
-        {collapsed ? 'TM' : 'Task Manager'}
+        {collapsed ? 'TO' : 'Task Orbit'}
       </div>
 
       <Menu theme='dark' mode='inline' items={menuItems} />
