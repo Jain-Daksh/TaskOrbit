@@ -1,12 +1,12 @@
-import { Card } from "antd";
+import { Card } from 'antd';
 
-export const TaskCard = ({ task }) => {
+export const TaskCard = ({ task }: any) => {
   return (
     <Card
-      size="small"
+      size='small'
       style={{
         marginBottom: 10,
-        cursor: "grab",
+        cursor: 'grab',
       }}
     >
       {task.title}
