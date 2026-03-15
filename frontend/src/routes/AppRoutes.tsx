@@ -8,8 +8,7 @@ import WorkspacePage from '../pages/workspace/Workspace';
 import MyProfilePage from '../pages/profile/profile';
 import ProjectDetailPage from '../pages/project/projectpage';
 import ProtectedRoute from './ProtectedRoute';
-
-const Dashboard = () => <h1>Dashboard</h1>;
+import DashboardPage from '../pages/Dashboard/Dashboard';
 
 export const router = createBrowserRouter([
   { path: '/', element: <Home /> },
@@ -23,7 +22,7 @@ export const router = createBrowserRouter([
       {
         element: <AppLayout />,
         children: [
-          { index: true, element: <Dashboard /> },
+          { index: true, element: <DashboardPage /> },
           { path: 'workspaces', element: <WorkspacePage /> },
           { path: 'workspace/:id', element: <WorkspaceDetailPage /> },
           { path: 'profile', element: <MyProfilePage /> },
