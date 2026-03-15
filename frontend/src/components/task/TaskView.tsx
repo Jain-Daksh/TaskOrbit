@@ -13,6 +13,8 @@ import {
 } from 'antd';
 import { useMediaQuery } from 'react-responsive';
 import api from '../../api/axiosService';
+import { DatePicker } from 'antd';
+import dayjs from 'dayjs';
 
 const { Text } = Typography;
 const { TextArea } = Input;
@@ -60,6 +62,7 @@ export const TaskView: React.FC<TaskViewProps> = ({
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState('');
   const [assigneeId, setAssigneeId] = useState<string | undefined>('');
+  const [dueDate, setDueDate] = useState<dayjs.Dayjs | null>(null);
   const isMobile = useMediaQuery({ maxWidth: 768 });
 
   const loadTask = async () => {
@@ -79,7 +82,9 @@ export const TaskView: React.FC<TaskViewProps> = ({
       setDescription(taskRes.data.data.description || '');
       setPriority(taskRes.data.data.priority || 'Medium');
       setAssigneeId(taskRes.data.data.assigneeId);
-
+      setDueDate(
+        taskRes.data.data.dueDate ? dayjs(taskRes.data.data.dueDate) : null,
+      );
       setStatuses(status);
       setUsers(mappedUsers);
     } catch (err) {
@@ -101,6 +106,7 @@ export const TaskView: React.FC<TaskViewProps> = ({
         description,
         priority,
         assigneeId,
+        dueDate: dueDate ? dueDate.toISOString() : null,
       });
       message.success('Task updated!');
       loadTask();
@@ -218,6 +224,20 @@ export const TaskView: React.FC<TaskViewProps> = ({
                 <Option value='Medium'>Medium</Option>
                 <Option value='High'>High</Option>
               </Select>
+            </div>
+
+            <div style={{ marginBottom: 20 }}>
+              <Text type='secondary' style={{ fontSize: 12 }}>
+                DUE DATE
+              </Text>
+
+              <DatePicker
+                style={{ width: '100%', marginTop: 6 }}
+                value={dueDate}
+                onChange={(date) => setDueDate(date)}
+                format='YYYY-MM-DD'
+                allowClear
+              />
             </div>
 
             {/* ASSIGNEE */}
