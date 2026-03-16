@@ -10,6 +10,8 @@ import ProjectDetailPage from '../pages/project/projectpage';
 import VerifyOtp from '../pages/auth/VerifyOtp';
 import ForgotPassword from '../pages/auth/ForgotPassword';
 import VerifySignupOtp from '../pages/auth/VerifySignupOtp';
+import ProtectedRoute from './ProtectedRoute';
+import DashboardPage from '../pages/Dashboard/Dashboard';
 
 const Dashboard = () => <h1>Dashboard</h1>;
 const Projects = () => <h1>Projects</h1>;
@@ -27,17 +29,20 @@ export const router = createBrowserRouter([
 
   {
     path: '/app',
-    element: <AppLayout />,
+    element: <ProtectedRoute />,
     children: [
-      { index: true, element: <Dashboard /> },
-      { path: 'projects', element: <Projects /> },
-      { path: 'tasks', element: <Tasks /> },
-      { path: 'workspaces', element: <WorkspacePage /> },
-      { path: 'workspace/:id', element: <WorkspaceDetailPage /> },
-      { path: 'profile', element: <MyProfilePage /> },
       {
-        path: 'projects/:workspaceId/:projectId',
-        element: <ProjectDetailPage />,
+        element: <AppLayout />,
+        children: [
+          { index: true, element: <DashboardPage /> },
+          { path: 'workspaces', element: <WorkspacePage /> },
+          { path: 'workspace/:id', element: <WorkspaceDetailPage /> },
+          { path: 'profile', element: <MyProfilePage /> },
+          {
+            path: 'projects/:workspaceId/:projectId',
+            element: <ProjectDetailPage />,
+          },
+        ],
       },
     ],
   },

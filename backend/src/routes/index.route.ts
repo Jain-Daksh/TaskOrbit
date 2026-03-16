@@ -9,7 +9,7 @@ import StatusRouter from './status.route';
 import CommentRouter from './comment.route';
 import UserRoute from './user.route';
 import WorkspaceMemberRoute from './workspace.member.route';
-
+import DashboardRoute from './dashboard.route';
 const router = express.Router();
 
 router.use(helloRouter);
@@ -21,7 +21,7 @@ router.use('/status', StatusRouter);
 router.use('/comment', CommentRouter);
 router.use('/workspaces', workspaceRouter);
 router.use('/user', UserRoute);
-
+router.use('/dashboard', DashboardRoute);
 router.use('/workspacemember', WorkspaceMemberRoute);
 
 export default router;

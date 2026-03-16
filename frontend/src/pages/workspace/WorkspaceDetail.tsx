@@ -320,17 +320,11 @@ export default function WorkspaceDetailPage() {
         </TabPane>
 
         <TabPane tab={`Status (${workspace.statuses.length})`} key='statuses'>
-          {workspace.statuses.length === 0 ? (
-            <Text type='secondary'>
-              No Status yet. Create one to get started!
-            </Text>
-          ) : (
-            <StatusManager
-              isAdmin={isAdmin}
-              statuses={workspace.statuses}
-              workspaceId={workspace.id}
-            />
-          )}
+          <StatusManager
+            isAdmin={isAdmin}
+            statuses={workspace.statuses}
+            workspaceId={workspace.id}
+          />
         </TabPane>
       </Tabs>
     </div>
