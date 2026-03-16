@@ -9,6 +9,7 @@ import MyProfilePage from '../pages/profile/profile';
 import ProjectDetailPage from '../pages/project/projectpage';
 import VerifyOtp from '../pages/auth/VerifyOtp';
 import ForgotPassword from '../pages/auth/ForgotPassword';
+import VerifySignupOtp from '../pages/auth/VerifySignupOtp';
 
 const Dashboard = () => <h1>Dashboard</h1>;
 const Projects = () => <h1>Projects</h1>;
@@ -20,6 +21,8 @@ export const router = createBrowserRouter([
   { path: '/register', element: <Register /> },
   { path: '/forgot-password', element: <ForgotPassword /> },
   { path: '/verify-otp', element: <VerifyOtp /> },
+  { path: '/verify-signup-otp', element: <VerifySignupOtp /> },
+
 
 
   {
