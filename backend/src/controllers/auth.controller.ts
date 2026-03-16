@@ -87,4 +87,28 @@ export class AuthController {
       return Failed(res, err.message || 'Failed to reset password', 400, err);
     }
   }
+
+  static async verifyAccount(req: Request, res: Response) {
+    try {
+      const { email, otp } = req.body;
+
+      if (!email || !otp) {
+        throw new Error('Email and OTP are required');
+      }
+
+      const { user, token } = await AuthService.verifyAccount(email, otp);
+
+      res.cookie('access_token', token, {
+        ...COOKIE_OPTIONS,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
+      return Success(res, 'Account verified successfully', {
+        user,
+        token,
+      });
+    } catch (err: any) {
+      return Failed(res, err.message || 'Verification failed', 400, err);
+    }
+  }
 }

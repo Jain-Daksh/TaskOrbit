@@ -126,9 +126,9 @@ async function mainNeon() {
   // 1️⃣ Create tiers
   const tiers = await prisma.tier.createManyAndReturn({
     data: [
-      { name: 'Tier 1', price: 10 },
-      { name: 'Tier 2', price: 20 },
-      { name: 'Tier 3', price: 30 },
+      { name: 'Free', price: 10 },
+      { name: 'Standard', price: 20 },
+      { name: 'Premium', price: 30 },
     ],
   });
 

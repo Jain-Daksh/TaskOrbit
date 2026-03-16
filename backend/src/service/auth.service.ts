@@ -10,24 +10,67 @@ const JWT_SECRET = process.env.JWT_SECRET!;
 
 export class AuthService {
   static async signup(name: string, email: string, password: string) {
-    const existingUser = await prisma.user.findUnique({ where: { email } });
-    if (existingUser) throw new Error('Email already registered');
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    });
 
-    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+    // CASE 1: user exists and verified
+    if (existingUser && existingUser.isVerified) {
+      throw new Error('Email already registered');
+    }
 
-    const user = await prisma.user.create({
+    let user = existingUser;
+
+    // CASE 2: user doesn't exist -> create
+    if (!existingUser) {
+      const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+
+      user = await prisma.user.create({
+        data: {
+          name,
+          email,
+          password: hashedPassword,
+          isVerified: false,
+        },
+      });
+    }
+
+    // generate OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    await prisma.oTP.create({
       data: {
-        name,
-        email,
-        password: hashedPassword,
+        userId: user!.id,
+        code: otp,
+        expiresAt: new Date(Date.now() + 10 * 60 * 1000),
       },
     });
 
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
-      expiresIn: '7d',
+    const transporter = nodemailer.createTransport({
+      host: config.SMTP.HOST,
+      port: config.SMTP.PORT,
+      auth: {
+        user: config.SMTP.USER,
+        pass: config.SMTP.PASS,
+      },
     });
 
-    return { user, token };
+    transporter.sendMail({
+      from: `"${config.SMTP.FROM_NAME}" <${config.SMTP.FROM_EMAIL}>`,
+      to: email,
+      subject: 'Verify your account',
+      html: `
+      <h3>Your OTP Code</h3>
+      <p>Your verification OTP is:</p>
+      <h2>${otp}</h2>
+      <p>This OTP will expire in 10 minutes.</p>
+    `,
+    });
+
+    return {
+      message: 'OTP sent to email for verification',
+      email: user!.email,
+    };
   }
 
   static async login(email: string, password: string) {
@@ -122,7 +165,7 @@ export class AuthService {
 
     const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
 
-    await transporter.sendMail({
+    transporter.sendMail({
       from: `"${config.SMTP.FROM_NAME}" <${config.SMTP.FROM_EMAIL}>`,
       to: email,
       subject: 'Password Reset Request',
@@ -131,6 +174,7 @@ export class AuthService {
 
     return { message: 'Password reset email sent' };
   }
+
   static async resetPassword(token: string, newPassword: string) {
     const record = await prisma.passwordResetToken.findUnique({
       where: { token },
@@ -152,5 +196,49 @@ export class AuthService {
     await prisma.passwordResetToken.delete({ where: { token } });
 
     return { message: 'Password reset successfully' };
+  }
+
+  static async verifyAccount(email: string, otp: string) {
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user) throw new Error('No user found with this email');
+
+    const verify = await prisma.oTP.findFirst({
+      where: {
+        userId: user.id,
+        code: otp,
+        isUsed: false,
+      },
+    });
+
+    if (!verify) throw new Error('Invalid or expired OTP');
+
+    if (verify.expiresAt < new Date()) {
+      throw new Error('OTP expired');
+    }
+
+    // mark otp as used
+    await prisma.oTP.update({
+      where: { id: verify.id },
+      data: { isUsed: true },
+    });
+
+    // mark user as verified
+    const updatedUser = await prisma.user.update({
+      where: { id: user.id },
+      data: { isVerified: true },
+    });
+
+    // create token (same as signup)
+    const token = jwt.sign({ userId: updatedUser.id }, JWT_SECRET, {
+      expiresIn: '7d',
+    });
+
+    const { password: _, ...safeUser } = updatedUser;
+
+    return {
+      user: safeUser,
+      token,
+    };
   }
 }

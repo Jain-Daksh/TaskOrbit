@@ -5,7 +5,8 @@ model Status {
   workspaceId String
   workspace   Workspace @relation(fields: [workspaceId], references: [id])
 
-  isActive Boolean @default(true)
+  isActive  Boolean @default(true)
+  isDefault Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
