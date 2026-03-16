@@ -32,10 +32,17 @@
   color: #555;
 }
 
-.hero-buttons button {
+.hero-buttons button:not(:last-child) {
   margin-right: 16px;
 }
-
+.hero-buttons button:not(:last-child) {
+  margin-right: 24px;
+}
+.hero-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
 .hero-image {
   flex: 1;
   min-width: 300px;
