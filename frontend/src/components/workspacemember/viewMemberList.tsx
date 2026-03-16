@@ -23,12 +23,14 @@ interface Member {
 interface WorkspaceMembersTableProps {
   isAdmin: boolean;
   members: Member[];
+  userId: string;
   onRemoveMember?: (memberId: string) => Promise<void>; // Callback to remove a member
 }
 
 export const WorkspaceMembersTable: React.FC<WorkspaceMembersTableProps> = ({
   isAdmin = false,
   members,
+  userId,
   onRemoveMember,
 }) => {
   const handleRemove = async (memberId: string) => {
@@ -77,8 +79,9 @@ export const WorkspaceMembersTable: React.FC<WorkspaceMembersTableProps> = ({
             onConfirm={() => handleRemove(record.id)}
             okText='Yes'
             cancelText='No'
+            disabled={record.userId === userId}
           >
-            <Button danger size='small'>
+            <Button danger size='small' disabled={record.userId === userId}>
               Remove
             </Button>
           </Popconfirm>
