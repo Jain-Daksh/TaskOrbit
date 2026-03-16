@@ -20,14 +20,46 @@ export class AuthService {
         name,
         email,
         password: hashedPassword,
+        isVerified: false,
       },
     });
 
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
-      expiresIn: '7d',
+    // generate OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    await prisma.otp.create({
+      data: {
+        userId: user.id,
+        otp: otp,
+        expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
+      },
     });
 
-    return { user, token };
+    const transporter = nodemailer.createTransport({
+      host: config.SMTP.HOST,
+      port: config.SMTP.PORT,
+      auth: {
+        user: config.SMTP.USER,
+        pass: config.SMTP.PASS,
+      },
+    });
+
+    await transporter.sendMail({
+      from: `"${config.SMTP.FROM_NAME}" <${config.SMTP.FROM_EMAIL}>`,
+      to: email,
+      subject: 'Verify your account',
+      html: `
+      <h3>Your OTP Code</h3>
+      <p>Your verification OTP is:</p>
+      <h2>${otp}</h2>
+      <p>This OTP will expire in 10 minutes.</p>
+    `,
+    });
+
+    return {
+      message: 'Signup successful. Please verify OTP sent to your email.',
+      email: user.email,
+    };
   }
 
   static async login(email: string, password: string) {
