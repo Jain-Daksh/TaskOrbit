@@ -29,9 +29,13 @@ export class WorkspaceService {
     if (!data?.tierId) {
       const tier = await prisma.tier.findFirst({
         where: {
-          price: 0,
+          name: 'Free',
         },
       });
+      if (!tier) {
+        throw new Error('Default tier not found');
+      }
+
       tId = tier?.id ?? '';
     }
     return prisma.workspace.create({
@@ -141,7 +145,7 @@ export class WorkspaceService {
         });
 
         await tx.status.deleteMany({
-          where: { projectId: { in: projectIds } },
+          where: { workspaceId },
         });
 
         await tx.project.deleteMany({
