@@ -8,57 +8,153 @@ export class DashboardService {
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
 
-    const [totalTasks, completedTasks, dueToday, overdue, recentTasks] =
-      await Promise.all([
-        prisma.task.count({
-          where: { assigneeId: userId },
-        }),
+    const dayAfterTomorrow = new Date(today);
+    dayAfterTomorrow.setDate(today.getDate() + 2);
 
-        prisma.task.count({
-          where: {
-            assigneeId: userId,
-            status: {
-              name: 'Done',
-            },
+    const [
+      totalTasks,
+      completedTasks,
+
+      dueToday,
+      dueTodayCount,
+
+      dueTomorrow,
+      dueTomorrowCount,
+
+      overdue,
+      overdueCount,
+
+      recentTasks,
+    ] = await Promise.all([
+      prisma.task.count({
+        where: { assigneeId: userId },
+      }),
+
+      prisma.task.count({
+        where: {
+          assigneeId: userId,
+          status: { name: 'Done' },
+        },
+      }),
+
+      // Today tasks
+      prisma.task.findMany({
+        where: {
+          assigneeId: userId,
+          dueDate: {
+            gte: today,
+            lt: tomorrow,
           },
-        }),
+        },
+        select: {
+          id: true,
+          title: true,
+          dueDate: true,
+          projectId: true,
+          project: { select: { name: true } },
+        },
+      }),
 
-        prisma.task.findMany({
-          where: {
-            assigneeId: userId,
-            dueDate: {
-              gte: today,
-              lt: tomorrow,
-            },
+      prisma.task.count({
+        where: {
+          assigneeId: userId,
+          dueDate: {
+            gte: today,
+            lt: tomorrow,
           },
-        }),
-
-        prisma.task.findMany({
-          where: {
-            assigneeId: userId,
-            dueDate: {
-              lt: today,
-            },
-            NOT: {
-              status: {
-                name: 'Done',
-              },
-            },
+          status: {
+            name: { not: 'Done' },
           },
-        }),
+        },
+      }),
 
-        prisma.task.findMany({
-          where: { assigneeId: userId },
-          orderBy: { createdAt: 'desc' },
-          take: 5,
-        }),
-      ]);
+      // Tomorrow tasks
+      prisma.task.findMany({
+        where: {
+          assigneeId: userId,
+          dueDate: {
+            gte: tomorrow,
+            lt: dayAfterTomorrow,
+          },
+        },
+        select: {
+          id: true,
+          title: true,
+          dueDate: true,
+          projectId: true,
+          project: { select: { name: true } },
+        },
+      }),
+
+      prisma.task.count({
+        where: {
+          assigneeId: userId,
+          dueDate: {
+            gte: tomorrow,
+            lt: dayAfterTomorrow,
+          },
+          status: {
+            name: { not: 'Done' },
+          },
+        },
+      }),
+
+      // Overdue tasks
+      prisma.task.findMany({
+        where: {
+          assigneeId: userId,
+          dueDate: { lt: today },
+          status: {
+            name: { not: 'Done' },
+          },
+        },
+        select: {
+          id: true,
+          title: true,
+          dueDate: true,
+          projectId: true,
+          project: { select: { name: true } },
+        },
+      }),
+
+      prisma.task.count({
+        where: {
+          assigneeId: userId,
+          dueDate: { lt: today },
+          status: {
+            name: { not: 'Done' },
+          },
+        },
+      }),
+
+      // Recent tasks
+      prisma.task.findMany({
+        where: { assigneeId: userId },
+        orderBy: { createdAt: 'desc' },
+        take: 5,
+        select: {
+          id: true,
+          title: true,
+          dueDate: true,
+          projectId: true,
+          project: { select: { name: true } },
+        },
+      }),
+    ]);
 
     return {
       totalTasks,
       completedTasks,
-      dueToday: dueToday.length,
-      overdue: overdue.length,
+
+      dueToday,
+      dueTodayCount,
+
+      dueTomorrow,
+      dueTomorrowCount,
+
+      overdue,
+      overdueCount,
+
       recentTasks,
     };
   }
