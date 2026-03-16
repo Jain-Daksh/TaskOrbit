@@ -18,17 +18,16 @@ export default function Home() {
             Modern, minimal, and intuitive.
           </p>
           <div className='hero-buttons'>
-            <Button type='primary' size='large'>
+            <Button type='primary' size='large' href='/register'>
               Register
             </Button>
-            <Button size='large'>Login</Button>
+            <Button href='/login' size='large'>
+              Login
+            </Button>
           </div>
         </div>
         <div className='hero-image'>
-          <img
-            src='https://via.placeholder.com/500x350'
-            alt='Task Orbit Preview'
-          />
+          <img src='Time_management_pana.svg' alt='Task Orbit Preview' />
         </div>
       </section>
 
