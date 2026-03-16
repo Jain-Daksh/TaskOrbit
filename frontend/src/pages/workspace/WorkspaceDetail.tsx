@@ -301,6 +301,7 @@ export default function WorkspaceDetailPage() {
             isAdmin={isAdmin}
             members={workspace.members}
             onRemoveMember={removeMember}
+            userId={currentUserId}
           />
         </TabPane>
 
