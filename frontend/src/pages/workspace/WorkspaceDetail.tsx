@@ -51,6 +51,7 @@ interface Statuses {
   name: string;
   isActive: boolean;
   order: number;
+  isDefault: boolean;
 }
 
 interface Workspace {

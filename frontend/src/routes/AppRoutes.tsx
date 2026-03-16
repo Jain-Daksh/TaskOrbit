@@ -13,10 +13,6 @@ import VerifySignupOtp from '../pages/auth/VerifySignupOtp';
 import ProtectedRoute from './ProtectedRoute';
 import DashboardPage from '../pages/Dashboard/Dashboard';
 
-const Dashboard = () => <h1>Dashboard</h1>;
-const Projects = () => <h1>Projects</h1>;
-const Tasks = () => <h1>Tasks</h1>;
-
 export const router = createBrowserRouter([
   { path: '/', element: <Home /> },
   { path: '/login', element: <Login /> },
@@ -24,8 +20,6 @@ export const router = createBrowserRouter([
   { path: '/forgot-password', element: <ForgotPassword /> },
   { path: '/verify-otp', element: <VerifyOtp /> },
   { path: '/verify-signup-otp', element: <VerifySignupOtp /> },
-
-
 
   {
     path: '/app',
