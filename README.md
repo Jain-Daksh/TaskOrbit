@@ -71,3 +71,58 @@ Prisma ORM
 PostgreSQL Database
 
 
+This separation ensures:
+- maintainability
+- scalability
+- testability
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- React / Next.js
+- TypeScript
+- Modern UI components
+
+### Backend
+- Node.js
+- Express.js
+- Prisma ORM
+- JWT Authentication
+
+### Database
+- PostgreSQL
+
+### Deployment
+- Frontend: Vercel
+- Backend: Render
+- Database: Neon PostgreSQL
+
+---
+
+## 📂 Project Structure
+
+
+src
+├── controllers
+├── services
+├── routes
+├── middleware
+├── utils
+├── prisma
+└── config
+
+
+This structure keeps business logic separate from request handling.
+
+---
+
+## 🔐 Security Considerations
+
+- JWT access tokens with refresh token rotation
+- Workspace membership validation
+- Role based authorization checks
+- Safe deletion strategies (soft delete when required)
+
+---
