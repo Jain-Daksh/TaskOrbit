@@ -49,6 +49,24 @@ export class WorkspaceService {
             roleId: adminRole?.id,
           },
         },
+        statuses: {
+          create: [
+            {
+              name: 'Pending',
+              isDefault: false,
+              createdBy: userId,
+              updatedBy: userId,
+              order: 0,
+            },
+            {
+              name: 'Done',
+              isDefault: true,
+              createdBy: userId,
+              updatedBy: userId,
+              order: 1,
+            },
+          ],
+        },
       },
     });
   }
