@@ -58,3 +58,16 @@ This project focuses on **clean backend architecture, secure authentication, and
 ## 🏗️ Architecture
 
 The backend follows a **Controller → Service → Database** architecture.
+
+
+Route
+↓
+Controller
+↓
+Service
+↓
+Prisma ORM
+↓
+PostgreSQL Database
+
+
