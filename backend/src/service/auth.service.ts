@@ -131,6 +131,7 @@ export class AuthService {
 
     return { message: 'Password reset email sent' };
   }
+
   static async resetPassword(token: string, newPassword: string) {
     const record = await prisma.passwordResetToken.findUnique({
       where: { token },
@@ -152,5 +153,49 @@ export class AuthService {
     await prisma.passwordResetToken.delete({ where: { token } });
 
     return { message: 'Password reset successfully' };
+  }
+
+  static async verifyAccount(email: string, otp: string) {
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user) throw new Error('No user found with this email');
+
+    const verify = await prisma.otp.findFirst({
+      where: {
+        userId: user.id,
+        otp: otp,
+        isUsed: false,
+      },
+    });
+
+    if (!verify) throw new Error('Invalid or expired OTP');
+
+    if (verify.expiresAt < new Date()) {
+      throw new Error('OTP expired');
+    }
+
+    // mark otp as used
+    await prisma.otp.update({
+      where: { id: verify.id },
+      data: { isUsed: true },
+    });
+
+    // mark user as verified
+    const updatedUser = await prisma.user.update({
+      where: { id: user.id },
+      data: { isVerified: true },
+    });
+
+    // create token (same as signup)
+    const token = jwt.sign({ userId: updatedUser.id }, JWT_SECRET, {
+      expiresIn: '7d',
+    });
+
+    const { password: _, ...safeUser } = updatedUser;
+
+    return {
+      user: safeUser,
+      token,
+    };
   }
 }
