@@ -32,6 +32,7 @@ interface Status {
   name: string;
   isActive: boolean;
   order: number;
+  isDefault: boolean;
 }
 
 interface Props {
@@ -161,7 +162,11 @@ export const StatusManager: React.FC<Props> = ({
       render: (_: any, record: Status) =>
         isAdmin && (
           <Space>
-            <Button type='link' onClick={() => handleEdit(record)}>
+            <Button
+              type='link'
+              onClick={() => handleEdit(record)}
+              disabled={record.isDefault}
+            >
               Edit
             </Button>
 
@@ -170,8 +175,9 @@ export const StatusManager: React.FC<Props> = ({
               okText='Yes'
               cancelText='No'
               onConfirm={() => handleDelete(record)}
+              disabled={record.isDefault}
             >
-              <Button type='link' danger>
+              <Button type='link' danger disabled={record.isDefault}>
                 Delete
               </Button>
             </Popconfirm>
