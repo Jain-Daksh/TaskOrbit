@@ -10,28 +10,39 @@ const JWT_SECRET = process.env.JWT_SECRET!;
 
 export class AuthService {
   static async signup(name: string, email: string, password: string) {
-    const existingUser = await prisma.user.findUnique({ where: { email } });
-    if (existingUser) throw new Error('Email already registered');
-
-    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-        isVerified: false,
-      },
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
     });
+
+    // CASE 1: user exists and verified
+    if (existingUser && existingUser.isVerified) {
+      throw new Error('Email already registered');
+    }
+
+    let user = existingUser;
+
+    // CASE 2: user doesn't exist -> create
+    if (!existingUser) {
+      const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+
+      user = await prisma.user.create({
+        data: {
+          name,
+          email,
+          password: hashedPassword,
+          isVerified: false,
+        },
+      });
+    }
 
     // generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    await prisma.otp.create({
+    await prisma.oTP.create({
       data: {
-        userId: user.id,
-        otp: otp,
-        expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
+        userId: user!.id,
+        code: otp,
+        expiresAt: new Date(Date.now() + 10 * 60 * 1000),
       },
     });
 
@@ -44,7 +55,7 @@ export class AuthService {
       },
     });
 
-    await transporter.sendMail({
+    transporter.sendMail({
       from: `"${config.SMTP.FROM_NAME}" <${config.SMTP.FROM_EMAIL}>`,
       to: email,
       subject: 'Verify your account',
@@ -57,8 +68,8 @@ export class AuthService {
     });
 
     return {
-      message: 'Signup successful. Please verify OTP sent to your email.',
-      email: user.email,
+      message: 'OTP sent to email for verification',
+      email: user!.email,
     };
   }
 
@@ -154,7 +165,7 @@ export class AuthService {
 
     const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
 
-    await transporter.sendMail({
+    transporter.sendMail({
       from: `"${config.SMTP.FROM_NAME}" <${config.SMTP.FROM_EMAIL}>`,
       to: email,
       subject: 'Password Reset Request',
@@ -192,10 +203,10 @@ export class AuthService {
 
     if (!user) throw new Error('No user found with this email');
 
-    const verify = await prisma.otp.findFirst({
+    const verify = await prisma.oTP.findFirst({
       where: {
         userId: user.id,
-        otp: otp,
+        code: otp,
         isUsed: false,
       },
     });
@@ -207,7 +218,7 @@ export class AuthService {
     }
 
     // mark otp as used
-    await prisma.otp.update({
+    await prisma.oTP.update({
       where: { id: verify.id },
       data: { isUsed: true },
     });
