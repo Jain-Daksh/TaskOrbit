@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button, Input, Form, Card, message } from 'antd';
 import api from '../../api/axiosService';
 import { useAuthStore } from '../../store/authStore';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
 import './Auth.css';
@@ -11,7 +11,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const setUser = useAuthStore((state) => state.setUser);
   const setToken = useAuthStore((state) => state.setToken);
-  const setRefreshToken = useAuthStore((state) =>state.setRefreshToken)
+  const setRefreshToken = useAuthStore((state) => state.setRefreshToken)
   const navigate = useNavigate();
 
   const onFinish = async (values: any) => {
@@ -19,7 +19,7 @@ export default function Login() {
     try {
       const res = await api.post('/auth/login', values);
       if (res.data.code === 200) {
-        const { user, accessToken,refreshToken } = res.data.data;
+        const { user, accessToken, refreshToken } = res.data.data;
         setUser(user);
         setToken(accessToken);
         setRefreshToken(refreshToken);
@@ -64,6 +64,9 @@ export default function Login() {
                 Login
               </Button>
             </Form.Item>
+            <div style={{ textAlign: 'right', marginBottom: '16px' }}>
+              <Link to='/forgot-password'>Forgot Password?</Link>
+            </div>
           </Form>
           <p className='auth-footer'>
             Don't have an account? <a href='/register'>Register</a>
