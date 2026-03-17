@@ -10,6 +10,8 @@ import CommentRouter from './comment.route';
 import UserRoute from './user.route';
 import WorkspaceMemberRoute from './workspace.member.route';
 import DashboardRoute from './dashboard.route';
+import ReminderRoute from './reminder.route';
+
 const router = express.Router();
 
 router.use(helloRouter);
@@ -23,5 +25,7 @@ router.use('/workspaces', workspaceRouter);
 router.use('/user', UserRoute);
 router.use('/dashboard', DashboardRoute);
 router.use('/workspacemember', WorkspaceMemberRoute);
+
+router.use('/reminder', ReminderRoute);
 
 export default router;
