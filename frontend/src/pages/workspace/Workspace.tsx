@@ -204,14 +204,12 @@ export default function WorkspacePage() {
                     size='small'
                     icon={<EyeOutlined />}
                     onClick={() => navigate(`/app/workspace/${ws.id}`)}
-                  >
-                  </Button>
+                  ></Button>
                   <Button
                     size='small'
                     icon={<EditOutlined />}
                     onClick={() => navigate(`/app/workspace/${ws.id}`)}
-                  >
-                  </Button>
+                  ></Button>
                   <Popconfirm
                     title='Are you sure to delete?'
                     onConfirm={() => deleteWorkspace(ws.id)}
@@ -231,7 +229,7 @@ export default function WorkspacePage() {
           columns={columns}
           rowKey='id'
           pagination={{ pageSize: 5 }}
-          style={{ marginTop: 16 }}
+          style={{ marginTop: 16, overflowX: 'auto' }}
         />
       )}
 
