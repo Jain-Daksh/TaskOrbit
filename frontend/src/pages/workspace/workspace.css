@@ -13,7 +13,9 @@
 
 .workspace-card {
   border-radius: 12px;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
   cursor: pointer;
   padding: 1.5rem;
   background: #fff;
@@ -47,4 +49,49 @@
 .ant-table-thead > tr > th {
   background: #f0f2f5;
   font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .workspace-page {
+    padding: 1rem;
+  }
+
+  .workspace-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .workspace-header .ant-space {
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .workspace-card {
+    padding: 1rem;
+  }
+
+  .workspace-card .ant-typography {
+    font-size: 14px;
+  }
+
+  .workspace-card .ant-btn {
+    padding: 0 6px;
+    height: 28px;
+  }
+
+  .ant-table {
+    font-size: 12px;
+  }
+
+  .ant-table .ant-table-thead > tr > th,
+  .ant-table .ant-table-tbody > tr > td {
+    padding: 8px 12px;
+  }
+
+  .ant-modal-content {
+    width: 90% !important;
+    margin: 0 auto;
+  }
 }
