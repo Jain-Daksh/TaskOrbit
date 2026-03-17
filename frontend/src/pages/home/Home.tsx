@@ -2,8 +2,11 @@ import { Button, Card, Row, Col } from 'antd';
 import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
 import './Home.css';
+import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
+  const navigate = useNavigate();
+
   return (
     <div className='home-container'>
       {/* Navbar */}
@@ -18,10 +21,14 @@ export default function Home() {
             Modern, minimal, and intuitive.
           </p>
           <div className='hero-buttons'>
-            <Button type='primary' size='large' href='/register'>
+            <Button
+              type='primary'
+              size='large'
+              onClick={() => navigate('/register')}
+            >
               Register
             </Button>
-            <Button href='/login' size='large'>
+            <Button onClick={() => navigate('/login')} size='large'>
               Login
             </Button>
           </div>
