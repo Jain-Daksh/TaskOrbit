@@ -163,9 +163,9 @@ export default function WorkspaceDetailPage() {
       setWorkspace((prev) =>
         prev
           ? {
-              ...prev,
-              projects: [...prev.projects, newProject],
-            }
+            ...prev,
+            projects: [...prev.projects, newProject],
+          }
           : prev,
       );
 
@@ -233,7 +233,9 @@ export default function WorkspaceDetailPage() {
           <Text type='secondary'>{workspace.members.length} members</Text>
         </div>
 
-        <Space>
+        <Space
+          wrap
+          size={[8, 8]} >
           {isAdmin && (
             <>
               <Button icon={<EditOutlined />} onClick={openEditModal}>
