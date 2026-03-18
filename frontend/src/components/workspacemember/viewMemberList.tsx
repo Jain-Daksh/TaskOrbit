@@ -97,6 +97,7 @@ export const WorkspaceMembersTable: React.FC<WorkspaceMembersTableProps> = ({
       dataSource={members}
       columns={columns}
       rowKey='id'
+      scroll={{ x: 'max-content' }}
       pagination={false}
     />
   );

@@ -229,6 +229,7 @@ export default function WorkspacePage() {
           columns={columns}
           rowKey='id'
           pagination={{ pageSize: 5 }}
+          scroll={{ x: 'max-content' }}
           style={{ marginTop: 16, overflowX: 'auto' }}
         />
       )}
