@@ -14,4 +14,6 @@ model Workspace {
   members  WorkspaceMember[]
   projects Project[]
   statuses Status[]
+
+  inviteUserTokens InviteUserToken[]
 }

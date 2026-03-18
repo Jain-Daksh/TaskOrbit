@@ -27,4 +27,6 @@ model User {
   otps OTP[]
 
   passwordResetTokens PasswordResetToken[]
+
+  inviteUserTokens InviteUserToken[]
 }
