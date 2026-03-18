@@ -220,6 +220,7 @@ export const StatusManager: React.FC<Props> = ({
             dataSource={statusList}
             columns={columns}
             rowKey='id'
+            scroll={{ x: 'max-content' }}
             title={() =>
               isAdmin && (
                 <Button type='primary' onClick={() => setAddModalOpen(true)}>
