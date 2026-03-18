@@ -315,6 +315,8 @@ export default function WorkspaceDetailPage() {
             </Text>
           ) : (
             <Table
+              scroll={{ x: 'max-content' }}
+
               dataSource={workspace.projects}
               columns={projectColumns}
               rowKey='id'
