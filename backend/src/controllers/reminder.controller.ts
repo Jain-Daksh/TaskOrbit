@@ -5,8 +5,14 @@ import { Success, Failed } from '../utils/apiResponse';
 export class ReminderController {
   static async runTaskReminder(req: Request, res: Response) {
     try {
-      await TaskReminderService.sendReminders();
-      return Success(res, 'Reminder job executed', null);
+      Success(res, 'Reminder job started', null);
+
+      TaskReminderService.sendReminders().catch((err) => {
+        console.error('Reminder job failed:', err);
+      });
+
+      // await TaskReminderService.sendReminders();
+      // return Success(res, 'Reminder job executed', null);
     } catch (err: any) {
       return Failed(res, err.message || 'Reminder job failed', 500, err);
     }
